@@ -4,8 +4,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MealsSubpagesScreen from './MealsSubpagesStack';
 import Meals from './Meals';
 
-import Nav from '../OverallNav';
-
 const MealStack = createStackNavigator();
 
 export default function MealStackScreen() {
@@ -27,8 +25,7 @@ export default function MealStackScreen() {
             <MealStack.Screen
                 name='Subpages'
                 component={MealsSubpagesScreen}
-                options={{headerShown:false}}
-                />
+                options={{headerShown:false}}/>
         </MealStack.Navigator>
     );
 }
