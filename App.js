@@ -16,6 +16,7 @@ export default class App extends Component {
 
     return (
       <View style={styles.container}>
+         <StatusBar barStyle='dark-content'/>
         <OverallNav/>
       </View>
     );

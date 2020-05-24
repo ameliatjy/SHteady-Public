@@ -1,53 +1,78 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert } from 'react-native';
-
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 
 export default class Report extends Component {
 
+    state = {
+        placeText: '',
+        problemText: '',
+        addText: '',
+    }
+
     button() {
-        Alert.alert(
-            'Fault Report Submission',
-            'Please confirm the submission of the fault report.',
-            [
-                {text: 'CONFIRM', onPress: () => console.warn('CONFIRM Pressed'), style: 'destructive'},
-                {text: 'CANCEL', onPress: () => console.warn('CANCEL Pressed'), style: 'destructive'},
-            ]
-        );
+        Keyboard.dismiss()
+        if (this.state.placeText == '' || this.state.problemText == '') {
+            Alert.alert(
+                'Fault Report Submission',
+                'Please ensure that all required fields have been filled in.'
+            );
+        } else {
+            Alert.alert(
+                'Fault Report Submission',
+                'Please confirm the submission of the fault report.\n' + 
+                'Place: ' + this.state.placeText + '\n' + 
+                'Problem: ' + this.state.problemText + '\n' + 
+                'Additional Details: ' + this.state.addText,
+                [
+                    {text: 'Cancel', onPress: () => console.warn('Cancel Pressed'), style: 'cancel'},
+                    {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
+                ]
+            );
+        }
     }
 
     render() {
         return(
-            <View style={styles.container}>
-                <View>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                <View style={styles.container}>
                     <Text style={styles.question}>There is something wrong at ... *</Text>
-                    <View style={styles.inputShort}>
+                    <View style={styles.inputConShort}>
                         <TextInput 
-                            style={styles.inputFont}
+                            style={styles.inputShort}
                             placeholder='Where? Block? Level?'
-                            placeholderTextColor='rgba(0,0,0,0.6)'/>
+                            placeholderTextColor='rgba(0,0,0,0.6)'
+                            multiline
+                            onChangeText={(inputText) => this.setState({placeText: inputText})}/>
                     </View>
+                        
                     <Text style={styles.question}>There is something wrong with ... *</Text>
-                    <View style={styles.inputLong}>  
+                    <View style={styles.inputConLong}>
                         <TextInput
-                            style={styles.inputFont}
+                            style={styles.inputLong}
                             placeholder='What?'
-                            placeholderTextColor='rgba(0,0,0,0.6)'/>
-                    </View>
+                            placeholderTextColor='rgba(0,0,0,0.6)'
+                            multiline
+                            onChangeText={(inputText) => this.setState({problemText: inputText})}/>
+                    </View>    
+
                     <Text style={styles.question}>Any other details to add ...</Text>
-                    <View style={styles.inputLong}>    
+                    <View style={styles.inputConLong}>
                         <TextInput
-                            style={styles.inputFont}
+                            style={styles.inputLong}
                             placeholder='hhddbosnovjdfpmv'
-                            placeholderTextColor='rgba(0,0,0,0.6)'/>
+                            placeholderTextColor='rgba(0,0,0,0.6)'
+                            multiline
+                            onChangeText={(inputText) => this.setState({addText: inputText})}/>
                     </View>
+
                     <Text style={styles.requiredField}>Required field *</Text>
+
                     <TouchableOpacity style={styles.button} onPress={() => this.button()}>
-                        {/* can add in a confirmation alert if want */}
                         <Text style={styles.buttonText}>Submit</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </TouchableWithoutFeedback> 
             
         )
     }
@@ -68,29 +93,43 @@ const styles = StyleSheet.create({
         color: '#ab000d',
         fontSize: 16,
     },
-    inputLong : {
-        height: 100,
+    inputConLong : {
+        height: 110,
         width: 380,
         backgroundColor: 'rgba(0,0,0,0.3)',
         borderRadius: 10,
         paddingHorizontal: 16,
         marginVertical: 5,
         alignSelf: 'center',
-        textAlignVertical: 'top',
-        paddingTop: 10,
+        paddingVertical: 5,
+        justifyContent: 'flex-start'
+    },
+    inputLong : {
+        height: 100,
+        width: 380,
+        borderRadius: 10,
+        paddingHorizontal: 16,
+        alignSelf: 'center',
+        fontSize: 17,
+        color: '#000000',
+    },
+    inputConShort : {
+        height: 50,
+        width: 380,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        borderRadius: 10,
+        paddingHorizontal: 16,
+        marginVertical: 5,
+        alignSelf: 'center',
+        paddingVertical: 5,
+        justifyContent: 'flex-start'
     },
     inputShort : {
         height: 40,
         width: 380,
-        backgroundColor: 'rgba(0,0,0,0.3)',
         borderRadius: 10,
         paddingHorizontal: 16,
-        marginVertical: 5,
         alignSelf: 'center',
-        textAlignVertical: 'top',
-        paddingTop: 12,
-    },
-    inputFont : {
         fontSize: 17,
         color: '#000000',
     },
@@ -109,8 +148,4 @@ const styles = StyleSheet.create({
         color: '#000000',
         textAlign: 'center',
     },
-    navBarCon : {
-        flex: 1,
-        flexDirection: 'column-reverse',
-    }
 })
