@@ -9,18 +9,18 @@ export default class DashBoard extends Component {
 
     state = {
         names: [
-           {'name': 'Ben', 'id': 1, 'task': 'close my windows'},
-           {'name': 'Susan', 'id': 2, 'task': 'close my windows'},
-           {'name': 'Robert', 'id': 3, 'task': 'close my windows'},
-           {'name': 'Mary', 'id': 4, 'task': 'close my windows'},
-           {'name': 'Daniel', 'id': 5, 'task': 'close my windows'},
-           {'name': 'Laura', 'id': 6, 'task': 'close my windows'},
-           {'name': 'John', 'id': 7, 'task': 'close my windows'},
-           {'name': 'Debra', 'id': 8, 'task': 'close my windows'},
-           {'name': 'Aron', 'id': 9, 'task': 'close my windows'},
-           {'name': 'Ann', 'id': 10, 'task': 'close my windows'},
-           {'name': 'Steve', 'id': 11, 'task': 'close my windows'},
-           {'name': 'Olivia', 'id': 12, 'task': 'close my windows'}
+           {'name': 'Ben', 'id': 1, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Susan', 'id': 2, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Robert', 'id': 3, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Mary', 'id': 4, 'task': 'close my windows', 'isInProgress': false},
+           {'name': 'Daniel', 'id': 5, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Laura', 'id': 6, 'task': 'close my windows', 'isInProgress': false},
+           {'name': 'John', 'id': 7, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Debra', 'id': 8, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Aron', 'id': 9, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Ann', 'id': 10, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Steve', 'id': 11, 'task': 'close my windows', 'isInProgress': true},
+           {'name': 'Olivia', 'id': 12, 'task': 'close my windows', 'isInProgress': true}
         ],
         dabaoDialogVisible: false,
         groceriesDialogVisible: false,
@@ -34,8 +34,8 @@ export default class DashBoard extends Component {
             'Send Help Please!',
             'Please help me close my windows!!!',
             [
-                {text: 'CONFIRM', onPress: () => console.warn('CONFIRM Pressed'), style: 'destructive'},
-                {text: 'CANCEL', onPress: () => console.warn('CANCEL Pressed'), style: 'destructive'},
+                {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
+                {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
             ]
         );
     }
@@ -72,8 +72,8 @@ export default class DashBoard extends Component {
             'Send Help Please!',
             'Halim coming!!! Help me hide my aircon PLEASE!!!',
             [
-                {text: 'CONFIRM', onPress: () => console.warn('CONFIRM Pressed'), style: 'destructive'},
-                {text: 'CANCEL', onPress: () => console.warn('CANCEL Pressed'), style: 'destructive'},
+                {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
+                {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
             ]
         );
     }
@@ -106,8 +106,34 @@ export default class DashBoard extends Component {
         this.setState({ othersDialogVisible: false });
     }
 
-    checkTaskProgress = () => {
+    checkTaskProgress = (isInProgress) => {
+        if (isInProgress) {
+            return {color: '#ff7d1d'}
+        } else {
+            return {color: '#d10a0a'};
+        }
+    }
 
+    helpWithTaskButton = (item) => {
+        if (item.isInProgress) {
+            Alert.alert(
+                'Help On The Way!',
+                'Thank you for offering your help!'
+                // [
+                //     {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
+                //     {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
+                // ]
+            );
+        } else {
+            Alert.alert(
+                'Help Needed!!!',
+                'Task: ' + item.task + '\n' + 'Room Number: ' + item.id,
+                [
+                    {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
+                    {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
+                ]
+            );
+        }
     }
 
     render() {
@@ -132,9 +158,9 @@ export default class DashBoard extends Component {
                             <Dialog.Description>
                                 Help me dabao please!!! I don't want to starve :')
                             </Dialog.Description>
-                            <Dialog.Input placeholder={'INPUT DISHES TO DABAO'}/>
-                            <Dialog.Button label="CONFIRM" onPress={this.dabaoHandleConfirm}/>
-                            <Dialog.Button label="CLOSE" onPress={this.dabaoHandleClose} style={{color:'red'}}/>
+                            <Dialog.Input placeholder={'Input dishes to dabao'}/>
+                            <Dialog.Button label="Cancel" onPress={this.dabaoHandleClose} style={{fontWeight: '500'}}/>
+                            <Dialog.Button label="Confirm" onPress={this.dabaoHandleConfirm}/>
                         </Dialog.Container>
                     </View>
 
@@ -148,6 +174,7 @@ export default class DashBoard extends Component {
                         <DateTimePickerModal
                             isVisible={this.state.datetimePickerVisibility}
                             mode="datetime"
+                            headerTextIOS={'Please wake me up at'}
                             onConfirm={this.wakeupHandleConfirm}
                             onCancel={this.hideDatetimePicker}
                         />
@@ -170,9 +197,9 @@ export default class DashBoard extends Component {
                             <Dialog.Description>
                                 Please help me restore my personal pantry :')
                             </Dialog.Description>
-                            <Dialog.Input placeholder={'INPUT GROCERIES TO BE BOUGHT'}/>
-                            <Dialog.Button label="CONFIRM" onPress={this.groceriesHandleConfirm}/>
-                            <Dialog.Button label="CLOSE" onPress={this.groceriesHandleClose} style={{color:'red'}}/>
+                            <Dialog.Input placeholder={'Input groceries to be bought'}/>
+                            <Dialog.Button label="Cancel" onPress={this.groceriesHandleClose} style={{fontWeight: '500'}}/>
+                            <Dialog.Button label="Confirm" onPress={this.groceriesHandleConfirm}/>
                         </Dialog.Container>
                     </View>
 
@@ -187,9 +214,9 @@ export default class DashBoard extends Component {
                             <Dialog.Description>
                                 Please help me ...
                             </Dialog.Description>
-                            <Dialog.Input placeholder={'INPUT HELP NEEDED'}/>
-                            <Dialog.Button label="CONFIRM" onPress={this.othersHandleConfirm}/>
-                            <Dialog.Button label="CLOSE" onPress={this.othersHandleClose} style={{color:'red'}}/>
+                            <Dialog.Input placeholder={'Input help needed'}/>
+                            <Dialog.Button label="Cancel" onPress={this.othersHandleClose} style={{fontWeight: '500'}}/>
+                            <Dialog.Button label="Confirm" onPress={this.othersHandleConfirm}/>
                         </Dialog.Container>
                     </View>
 
@@ -213,7 +240,9 @@ export default class DashBoard extends Component {
                                         <Text style={styles.taskHeader}>{item.name}</Text>
                                         <Text style={styles.taskBody}>{item.task}</Text>
                                     </View>
-                                    <Icon name='circle' size={45} style={styles.taskProgress}/>
+                                    <TouchableOpacity style={styles.taskProgress} onPress={() => this.helpWithTaskButton(item)}>
+                                        <Icon name='circle' size={45} style={this.checkTaskProgress(item.isInProgress)}/>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         ))
@@ -253,7 +282,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     taskCon : {
-        flex: 0.55,
+        flex: 0.5,
         alignContent: 'flex-end',
         paddingBottom: 5,
     }, 
@@ -278,6 +307,7 @@ const styles = StyleSheet.create({
     }, 
     task : {
         flexDirection: 'row',
+        width: 340,
     },
     taskHeader : {
         fontWeight: '500',
@@ -288,7 +318,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     taskProgress : {
-        paddingLeft: 190,
-        color: 'red'
-    }
+        position: 'absolute',
+        right: 0,
+    },
 });
