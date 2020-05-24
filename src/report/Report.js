@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 
 export default class Report extends Component {
@@ -34,44 +34,45 @@ export default class Report extends Component {
 
     render() {
         return(
-            <View style={styles.container}>
-                <View>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                <View style={styles.container}>
                     <Text style={styles.question}>There is something wrong at ... *</Text>
                     <View style={styles.inputConShort}>
-                    <TextInput 
-                        style={styles.inputShort}
-                        placeholder='Where? Block? Level?'
-                        placeholderTextColor='rgba(0,0,0,0.6)'
-                        multiline
-                        onChangeText={(inputText) => this.setState({placeText: inputText})}/>
+                        <TextInput 
+                            style={styles.inputShort}
+                            placeholder='Where? Block? Level?'
+                            placeholderTextColor='rgba(0,0,0,0.6)'
+                            multiline
+                            onChangeText={(inputText) => this.setState({placeText: inputText})}/>
                     </View>
-                    
+                        
                     <Text style={styles.question}>There is something wrong with ... *</Text>
                     <View style={styles.inputConLong}>
-                    <TextInput
-                        style={styles.inputLong}
-                        placeholder='What?'
-                        placeholderTextColor='rgba(0,0,0,0.6)'
-                        multiline
-                        onChangeText={(inputText) => this.setState({problemText: inputText})}/>
+                        <TextInput
+                            style={styles.inputLong}
+                            placeholder='What?'
+                            placeholderTextColor='rgba(0,0,0,0.6)'
+                            multiline
+                            onChangeText={(inputText) => this.setState({problemText: inputText})}/>
                     </View>    
 
                     <Text style={styles.question}>Any other details to add ...</Text>
                     <View style={styles.inputConLong}>
-                    <TextInput
-                        style={styles.inputLong}
-                        placeholder='hhddbosnovjdfpmv'
-                        placeholderTextColor='rgba(0,0,0,0.6)'
-                        multiline
-                        onChangeText={(inputText) => this.setState({addText: inputText})}/>
+                        <TextInput
+                            style={styles.inputLong}
+                            placeholder='hhddbosnovjdfpmv'
+                            placeholderTextColor='rgba(0,0,0,0.6)'
+                            multiline
+                            onChangeText={(inputText) => this.setState({addText: inputText})}/>
                     </View>
 
                     <Text style={styles.requiredField}>Required field *</Text>
+
                     <TouchableOpacity style={styles.button} onPress={() => this.button()}>
                         <Text style={styles.buttonText}>Submit</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </TouchableWithoutFeedback> 
             
         )
     }

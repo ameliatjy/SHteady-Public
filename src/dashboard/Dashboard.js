@@ -118,11 +118,13 @@ export default class DashBoard extends Component {
         if (item.isInProgress) {
             Alert.alert(
                 'Help On The Way!',
-                'Thank you for offering your help!'
-                // [
-                //     {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                //     {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
-                // ]
+                'Thank you for offering your help!\n' +
+                'Please confirm that the task has been completed!',
+                [
+                    {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
+                    {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
+                ]
+                // onpress(confirm) delete the task
             );
         } else {
             Alert.alert(
@@ -132,6 +134,7 @@ export default class DashBoard extends Component {
                     {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
                     {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
                 ]
+                // onpress(confirm) change task taskinprogress:true
             );
         }
     }
@@ -139,6 +142,7 @@ export default class DashBoard extends Component {
     render() {
         return(
             <View style={styles.container}>
+                {/* <View style={{flex: 0.5, justifyContent: 'space-between' }}> */}
                 <View style={styles.iconCon}>
 
                     <TouchableOpacity style={styles.individualIcon} onPress={() => this.closeMyWindowsButton()}>
@@ -221,13 +225,15 @@ export default class DashBoard extends Component {
                     </View>
 
                 </View>
+                {/* </View> */}
 
-                <View
+                {/* <View
                     style={{
+                        flex:0.01,
                         borderBottomColor: '#ff7d1d',
                         borderBottomWidth: StyleSheet.hairlineWidth,
                     }}
-                />
+                /> */}
 
                 <View style={styles.taskCon}>
                     <Text style={styles.title}>Current Help Needed!!</Text>
@@ -264,27 +270,29 @@ const styles = StyleSheet.create({
         flex: 0.5,
         alignItems: 'center',
         justifyContent: 'space-evenly',
+        alignContent:'center',
         flexDirection: 'row',
         flexWrap: 'wrap',
+        borderBottomColor: '#ff7d1d',
+        borderBottomWidth: StyleSheet.hairlineWidth,
     },
     individualIcon : {
         alignItems: 'center',
+        paddingVertical: 10,
     },
     iconPic : {
         width: 110, 
         height: 110,
-        marginTop: 20,
     },
     iconText : {
         fontSize: 14,
         color: '#616161',
-        paddingVertical: 10,
+        paddingTop: 10,
         fontWeight: '500',
     },
     taskCon : {
         flex: 0.5,
         alignContent: 'flex-end',
-        paddingBottom: 5,
     }, 
     title : {
         fontSize: 20,
