@@ -4,35 +4,40 @@ import {
   View,
   Button,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import Icon2 from 'react-native-vector-icons/FontAwesome5';
-
 
 export default class Meals extends Component {
 
     viewMenu = () => {
-        this.props.navigation.navigate('Subpages', { screen : 'Menu' });
+        this.props.navigation.navigate('Subpages', { screen : 'Menu', params: { currPage: 'Menu'} });
     }
 
     donateMeal = () => {
-        this.props.navigation.navigate('Subpages', { screen : 'Donate'});
+        this.props.navigation.navigate('Subpages', { screen : 'Donate', params: { currPage: 'Donate'}});
     }
 
     redeemMeal = () => {
-        this.props.navigation.navigate('Subpages', { screen : 'Redeem'});
+        this.props.navigation.navigate('Subpages', { screen : 'Redeem', params: { currPage: 'Redeem'}});
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity>
-                    <Icon1 style={{alignSelf:'center'}} name="food" size={120} onPress={this.viewMenu} color='orange'/>
-                    <Button title="View Menu" onPress={this.viewMenu} color='black'/>
-                    <Icon2 style={{alignSelf:'center', paddingTop: 30}} name="hand-holding-heart" size={120} onPress={this.donateMeal} color='orange'/>
-                    <Button title="Donate Your Meal" onPress={this.donateMeal} color='black'/>
-                    <Icon2 style={{alignSelf:'center', paddingTop:30}} name="pray" size={120} onPress={this.redeemMeal} color='orange'/>
-                    <Button title="Second Serving Plz..." onPress={this.redeemMeal} color='black'/>
+                <TouchableOpacity onPress={this.viewMenu}>
+                    <Image source={require('../images/menu.png')}
+                        style={{width:150, height:150, alignSelf: 'center'}} />
+                    <Button title="View Menu" onPress={this.viewMenu} color='#616161' />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.donateMeal}>
+                    <Image source={require('../images/donatemeal.png')}
+                        style={{width:150, height:150, alignSelf: 'center'}} />
+                    <Button title="Donate Your Meal" onPress={this.donateMeal} color='#616161'/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.redeemMeal}>
+                    <Image source={require('../images/secondserving.png')}
+                        style={{width:150, height:150, alignSelf: 'center'}} />
+                    <Button title="Second Serving Plz..." onPress={this.redeemMeal} color='#616161'/>
                 </TouchableOpacity>
             </View>
         );
@@ -44,6 +49,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
   },
 });

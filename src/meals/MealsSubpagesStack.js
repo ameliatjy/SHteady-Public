@@ -1,9 +1,14 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
 
 import ViewMenu from './ViewMenu';
 import DonateMeal from './DonateMeal';
 import SecondServing from './SecondServing';
+import { Button, Image } from 'native-base';
+import { Alert } from 'react-native';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+
+import Nav from '../OverallNav';
 
 const MealsSubpagesStack = createStackNavigator();
 

@@ -18,7 +18,10 @@ export default class Profile extends Component {
     }
 
     statusUpdate = () => {
-        this.props.navigation.navigate('Subpages', { screen: 'Status'});
+        this.props.navigation.navigate('Subpages', {
+            screen: 'Status',
+            params: { currStatus: 'yo hmu i am in'},
+        });
     }
 
     viewCommunities = () => {
@@ -39,11 +42,12 @@ export default class Profile extends Component {
                     onPress: () => this.props.navigation.navigate('SignedOut', {screen : 'Login'}),
                 }
             ],
-            { cancelable: false }
+            { cancelable: false } 
         );
     }
 
     render() {
+        const newStatus = this.props.route.params?.currStatus ?? 'yo hmu i am in'
         return(
             <Container style={{ flex: 1, backgroundColor: 'white' }}>
                 <Content>
@@ -64,8 +68,8 @@ export default class Profile extends Component {
 
                                 <TouchableOpacity onPress={this.statusUpdate}>
                                     <View style={{ flexDirection: 'row', paddingTop: 30, marginLeft: 100, marginRight: 100 }}>
-                                        <Text style={{ flex: 7, justifyContent: 'flex-start'}}>Status</Text>
-                                        <Text style={{ flex: 2, fontSize:8, justifyContent: 'flex-end'}}>{JSON.stringify(this.props)}</Text>
+                                        <Text style={{ flex: 5, justifyContent: 'flex-start'}}>Status</Text>
+                                        <Text style={{ flex: 4, fontSize:8, textAlign:'right', marginRight: 10 }}>{newStatus}</Text>
                                         <Arrow name="right" size={20} style={{ flex: 1, justifyContent: 'flex-end'}}/>
                                     </View>
                                 </TouchableOpacity>
