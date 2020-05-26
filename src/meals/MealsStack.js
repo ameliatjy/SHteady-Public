@@ -22,7 +22,10 @@ export default function MealStackScreen() {
                     },
                 }}
             />
-            <MealStack.Screen name='Subpages' component={MealsSubpagesScreen} options={{headerShown: false}}/>
+            <MealStack.Screen
+                name='Subpages'
+                component={MealsSubpagesScreen}
+                options={{headerShown:false}}/>
         </MealStack.Navigator>
     );
 }

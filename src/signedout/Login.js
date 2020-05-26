@@ -6,15 +6,18 @@ import Logo from '../components/Logo';
 
 export default class Login extends Component {
 
+
     render() {
+        console.log('yo')
         return(
             <View style={styles.container}>
                 <Logo/>
                 <View style={styles.formCon}>
                     <View style={styles.inputBox}>
                         <TextInput style={styles.inputBoxText} 
-                            placeholder='Matric Number'
-                            placeholderTextColor='#000000'/>
+                            placeholder='Email Address'
+                            placeholderTextColor='#000000'
+                            keyboardType='email-address'/>
                     </View>
                     <View style={styles.inputBox}>
                         <TextInput style={styles.inputBoxText} 

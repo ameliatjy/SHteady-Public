@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Button,
   Text,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -84,8 +83,8 @@ const styles = StyleSheet.create({
       backgroundColor: '#ECECEC',
       marginTop: 4,
       padding: 10,
-      marginLeft: 35,
-      marginRight: 35,
+      marginLeft: 15,
+      marginRight: 15,
       borderRadius: 15,
   }
 });

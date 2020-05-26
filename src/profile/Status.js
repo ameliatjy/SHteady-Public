@@ -11,10 +11,27 @@ import {
 } from 'react-native';
 
 export default class Status extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
-            avail: 'LOL'}
+            avail: ''};
+    }
+
+    updatedStatus = () => {
+        Alert.alert(
+            'Status Update',
+            'Your status has been successfully updated!',
+            [
+                {
+                    text: 'Nice!',
+                    onPress: () => {
+                        this.props.navigation.navigate('Profile', {currStatus: this.state.avail});}
+                },
+            ],
+            {cancelable: false}
+        );
+        Keyboard.dismiss();
     }
 
     render() {
@@ -36,24 +53,7 @@ export default class Status extends Component {
             ]
         }
 
-        var updatedStatus = (newStatus) => {
-            Alert.alert(
-                'Status Update',
-                'Your status has been successfully updated!',
-                [
-                    {
-                        text: 'Nice!',
-                        onPress: () => this.props.navigation.navigate('Profile', {
-                            currStatus: newStatus})
-                    },
-                ],
-                {cancelable: false}
-            );
-            Keyboard.dismiss();
-        }
-
         return(
-
             <View>
                 {
                     options.availability.map((item, index) => (
@@ -61,7 +61,7 @@ export default class Status extends Component {
                             key = {item.id}
                             style = {styles.container}
                             onPress = {item => this.setState(item.avail)}
-                            onPress = {() => this.props.navigation.navigate('Profile', {currStatus: item.avail})}>
+                            onPress = {() => this.props.navigation.navigate('Profile', { currStatus: item.avail })}>
                                 <Text style={styles.text}>
                                     {item.avail}
                                 </Text>
@@ -72,11 +72,8 @@ export default class Status extends Component {
                         style={{height:58, marginTop: 10, backgroundColor: 'white'}}
                         multiline={true}
                         placeholder="Customise your status here!"
-                        onChangeText={newStatus =>
-                            this.setState({newStatus})}
-                        onSubmitEditing={newStatus => updatedStatus(newStatus)}
-                        //onSubmitEditing={text => navigate('Profile', {currStatus: text})}
-                    />
+                        onChangeText={newStatus => {this.state.avail = newStatus}}
+                        onSubmitEditing={this.updatedStatus}/>
             </View>
         );
     }
