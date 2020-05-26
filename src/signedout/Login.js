@@ -1,44 +1,72 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
 
 import Logo from '../components/Logo';
 
+import { loginUser } from '../components/auth';
+import { ErrorMsg } from '../components/errormsg';
 
-export default class Login extends Component {
+const Login = ({ navigation }) => {
+    const [email, setEmail] = useState({ value: "", error: "" });
+    const [password, setPassword] = useState({ value: "", error: "" });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+  
+    const onLoginPressed = async () => {
+      if (loading) return;
+  
+      setLoading(true);
+  
+      const response = await loginUser({
+        email: email.value,
+        password: password.value
+      });
+  
+      if (response.error) {
+        setError(response.error);
+      } else {
+            navigation.navigate('SignedIn', {
+                screen : 'Profile'
+            });
+      }
+  
+      setLoading(false);
+    };
 
-
-    render() {
-        console.log('yo')
-        return(
-            <View style={styles.container}>
-                <Logo/>
-                <View style={styles.formCon}>
-                    <View style={styles.inputBox}>
-                        <TextInput style={styles.inputBoxText} 
-                            placeholder='Email Address'
-                            placeholderTextColor='#000000'
-                            keyboardType='email-address'/>
-                    </View>
-                    <View style={styles.inputBox}>
-                        <TextInput style={styles.inputBoxText} 
-                            placeholder='Password'
-                            secureTextEntry
-                            placeholderTextColor='#000000'/>
-                    </View>
-                    <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('SignedIn')}>
-                        <Text style={styles.buttonText}>Login</Text>
-                    </TouchableOpacity>
+    return(
+        <View style={styles.container}>
+            <Logo/>
+            <View style={styles.formCon}>
+                <View style={styles.inputBox}>
+                    <TextInput style={styles.inputBoxText} 
+                        placeholder='Email Address'
+                        placeholderTextColor='#000000'
+                        keyboardType='email-address'
+                        onChangeText={text => setEmail({ value: text, error: '' })}/>
                 </View>
-                <View style={styles.signupTextCont}>
-                    <Text style={styles.signupText}>Don't have an account yet?</Text>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
-                        <Text style={styles.signupButton}> Signup</Text>
-                    </TouchableOpacity>
+                <View style={styles.inputBox}>
+                    <TextInput style={styles.inputBoxText} 
+                        placeholder='Password'
+                        secureTextEntry
+                        placeholderTextColor='#000000'
+                        onChangeText={text => setPassword({ value: text, error: '' })}/>
                 </View>
+                <TouchableOpacity style={styles.button} onPress={onLoginPressed}>
+                    <Text style={styles.buttonText}>Login</Text>
+                </TouchableOpacity>
             </View>
-        )
-    }
+            <View style={styles.signupTextCont}>
+                <Text style={styles.signupText}>Don't have an account yet?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                    <Text style={styles.signupButton}> Signup</Text>
+                </TouchableOpacity>
+            </View>
+            <ErrorMsg message={error} onDismiss={() => setError("")} />
+        </View>
+    )
 }
+
+export default Login;
 
 const styles = StyleSheet.create({
     container : {

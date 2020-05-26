@@ -8,6 +8,9 @@ import {
   Alert,
 } from 'react-native';
 
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
 import { Container, Content, Button } from 'native-base';
 import Arrow from 'react-native-vector-icons/AntDesign';
 

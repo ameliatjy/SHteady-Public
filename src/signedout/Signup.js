@@ -1,24 +1,21 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
 
 import Logo from '../components/Logo';
 
-import { loginUser, signUpUser } from '../components/auth';
+import { signUpUser } from '../components/auth';
 import { ErrorMsg } from '../components/errormsg';
 
 const Signup = ({navigation}) => {
         const [name, setName] = useState({ value: "", error: "" });
         const [email, setEmail] = useState({ value: "", error: "" });
         const [password, setPassword] = useState({ value: "", error: "" });
+        const [confirmPassword, setConfirmPassword] = useState({ value: "", error: " "})
         const [loading, setLoading] = useState(false);
         const [error, setError] = useState("");
       
         const onSignUpPressed = async () => {
           if (loading) return;
-
-          console.log(name)
-          console.log(email)
-          console.log(password)
       
           setLoading(true);
       
@@ -26,15 +23,13 @@ const Signup = ({navigation}) => {
             name: name.value,
             email: email.value,
             password: password.value,
+            confirmPassword: confirmPassword.value
           });
-          console.log('what',response.error)
-          console.log('did run')
       
           if (response.error) {
             setError(response.error);
           } 
           else {
-            //console.log('error:', error);
             navigation.navigate('SignedIn', {screen : 'Profile'})
               //show green message
               //redirect to login page
@@ -71,21 +66,22 @@ const Signup = ({navigation}) => {
                     <View style={styles.inputBox}>
                         <TextInput style={styles.inputBoxText} 
                             placeholder='Password'
-                            onChangeText={text => setPassword({ value: text, error: '' })}
                             secureTextEntry
                             placeholderTextColor='#000000'
                             error={!!password.error}
                             errorText={password.error}
-                            value={password.value}/>
+                            value={password.value}
+                            onChangeText={text => setPassword({ value: text, error: '' })}/>
                     </View>
                     <View style={styles.inputBox}>
                         <TextInput style={styles.inputBoxText} 
                             placeholder='Confirm Password'
                             secureTextEntry
                             placeholderTextColor='#000000'
-                            error={!!password.error}
-                            errorText={password.error}
-                            value={password.value}/>
+                            error={!!confirmPassword.error}
+                            errorText={confirmPassword.error}
+                            value={confirmPassword.value}
+                            onChangeText={text => setConfirmPassword({ value: text, error: '' })}/>
                     </View>
                     <TouchableOpacity style={styles.button} loading={loading} mode='contained' onPress={
                         onSignUpPressed}>
