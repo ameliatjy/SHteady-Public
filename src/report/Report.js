@@ -1,6 +1,36 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import firebase from 'firebase/app';
 
+const checkReport = (placeText, problemText, addText) => {
+    if (placeText == '' || problemText == '') {
+        return Alert.alert(
+            'Fault Report Submission',
+            'Please ensure that all required fields have been filled in.'
+        );
+    } else {
+        return submitReport(placeText, problemText, addText);          
+    }
+}
+
+const submitReport = (placeText, problemText, addText) => {
+    Alert.alert(
+        'Fault Report Submission',
+        'Please confirm the submission of the fault report.\n' + 
+        'Place: ' + placeText + '\n' + 
+        'Problem: ' + problemText + '\n' + 
+        'Additional Details: ' + addText,
+        [
+            {text: 'Cancel', onPress: () => console.warn('Cancel Pressed'), style: 'cancel'},
+            // {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
+            {text: 'Confirm', onPress: confirmedReport, style: 'default'},
+        ]
+    );
+}
+
+const confirmedReport = () => {
+    firebase.database().ref('report/' + 'hi').set({name: 'hi'})
+}
 
 export default class Report extends Component {
 
@@ -12,24 +42,8 @@ export default class Report extends Component {
 
     button() {
         Keyboard.dismiss()
-        if (this.state.placeText == '' || this.state.problemText == '') {
-            Alert.alert(
-                'Fault Report Submission',
-                'Please ensure that all required fields have been filled in.'
-            );
-        } else {
-            Alert.alert(
-                'Fault Report Submission',
-                'Please confirm the submission of the fault report.\n' + 
-                'Place: ' + this.state.placeText + '\n' + 
-                'Problem: ' + this.state.problemText + '\n' + 
-                'Additional Details: ' + this.state.addText,
-                [
-                    {text: 'Cancel', onPress: () => console.warn('Cancel Pressed'), style: 'cancel'},
-                    {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
-                ]
-            );
-        }
+        checkReport(this.state.placeText, this.state.problemText, this.state.addText)
+        
     }
 
     render() {

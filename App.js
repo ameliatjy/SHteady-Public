@@ -5,6 +5,10 @@ import * as firebase from 'firebase';
 
 import OverallNav from './src/OverallNav';
 
+import Navbar from './src/Navbar';
+import { NavigationContainer } from '@react-navigation/native';
+
+
 const firebaseConfig = {
     apiKey: "AIzaSyB1oyaDAneBvtqpJJqYN_o13jWDExpRDq0",
     authDomain: "shteady-b81ed.firebaseapp.com",
@@ -29,8 +33,12 @@ export default class App extends Component {
   render() {    
     return (
       <View style={styles.container}>
-         <StatusBar barStyle='dark-content'/>
+        <StatusBar barStyle='dark-content'/>
         <OverallNav/>
+        {/* uncomment to avoid login page, test dashboard only
+        <NavigationContainer>
+        <Navbar/>
+        </NavigationContainer> */}
       </View>
     );
   }
