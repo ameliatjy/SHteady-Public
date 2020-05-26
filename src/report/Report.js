@@ -23,13 +23,16 @@ const submitReport = (placeText, problemText, addText) => {
         [
             {text: 'Cancel', onPress: () => console.warn('Cancel Pressed'), style: 'cancel'},
             // {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
-            {text: 'Confirm', onPress: confirmedReport, style: 'default'},
+            {text: 'Confirm', onPress: confirmedReport(placeText, problemText, addText), style: 'default'},
         ]
     );
 }
 
-const confirmedReport = () => {
-    firebase.database().ref('report/' + 'hi').set({name: 'hi'})
+const confirmedReport = (place, problem, add) => {
+    firebase.database().ref('report/' + place).set({
+        location: place,
+        problem: problem,
+        otherDetails: add})
 }
 
 export default class Report extends Component {
