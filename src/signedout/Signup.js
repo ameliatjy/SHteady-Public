@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-nativ
 
 import Logo from '../components/Logo';
 
-import { emailValidator, passwordValidator, nameValidator } from '../components/utils';
 import { loginUser, signUpUser } from '../components/auth';
 import { ErrorMsg } from '../components/errormsg';
 
@@ -16,17 +15,6 @@ const Signup = ({navigation}) => {
       
         const onSignUpPressed = async () => {
           if (loading) return;
-      
-          const nameError = nameValidator(name.value);
-          const emailError = emailValidator(email.value);
-          const passwordError = passwordValidator(password.value);
-      
-          if (emailError || passwordError || nameError) {
-            setName({ ...name, error: nameError });
-            setEmail({ ...email, error: emailError });
-            setPassword({ ...password, error: passwordError });
-            return;
-          }
 
           console.log(name)
           console.log(email)
@@ -37,7 +25,7 @@ const Signup = ({navigation}) => {
           const response = await signUpUser({
             name: name.value,
             email: email.value,
-            password: password.value
+            password: password.value,
           });
           console.log('what',response.error)
           console.log('did run')
