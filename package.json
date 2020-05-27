@@ -25,6 +25,7 @@
     "react-native-gesture-handler": "~1.6.0",
     "react-native-input-scroll-view": "^1.10.1",
     "react-native-modal-datetime-picker": "^8.7.0",
+    "react-native-multiple-select": "^0.5.5",
     "react-native-paper": "^3.10.1",
     "react-native-reanimated": "~1.7.0",
     "react-native-router-flux": "^4.2.0",
