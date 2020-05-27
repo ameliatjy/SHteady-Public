@@ -2,15 +2,19 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import firebase from 'firebase/app';
 
-const checkReport = (placeText, problemText, addText) => {
-    if (placeText == '' || problemText == '') {
-        return Alert.alert(
-            'Fault Report Submission',
-            'Please ensure that all required fields have been filled in.'
-        );
-    } else {
-        return submitReport(placeText, problemText, addText);          
-    }
+const checkReport = (placeText, problemText) => {
+    return placeText != '' && problemText != ''
+}
+
+const failedCheckReport = () => {
+    Alert.alert(
+        'Fault Report Submission',
+        'Please ensure that all required fields have been filled in.'
+    )
+}
+
+const successfulCheckReport = (placeText, problemText, addText) => {
+    submitReport(placeText, problemText, addText)
 }
 
 const submitReport = (placeText, problemText, addText) => {
@@ -22,17 +26,17 @@ const submitReport = (placeText, problemText, addText) => {
         'Additional Details: ' + addText,
         [
             {text: 'Cancel', onPress: () => console.warn('Cancel Pressed'), style: 'cancel'},
-            // {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
-            {text: 'Confirm', onPress: confirmedReport(placeText, problemText, addText), style: 'default'},
+            {text: 'Confirm', onPress: () => confirmedReport(placeText, problemText, addText), style: 'default'},
         ]
     );
 }
 
-const confirmedReport = (place, problem, add) => {
-    firebase.database().ref('report/' + place).set({
-        location: place,
-        problem: problem,
-        otherDetails: add})
+const confirmedReport = (placeText, problemText, addText) => {
+    firebase.database().ref('report/' + placeText).set({
+        location: placeText,
+        problem: problemText,
+        otherDetails: addText})
+    
 }
 
 export default class Report extends Component {
@@ -41,12 +45,31 @@ export default class Report extends Component {
         placeText: '',
         problemText: '',
         addText: '',
+        myPlaceText: React.createRef(),
+        myProblemText: React.createRef(),
+        myAddText: React.createRef(),
+    }
+
+    resetAllFields() {
+        this.state.myPlaceText.current.clear()
+        this.state.myProblemText.current.clear()
+        this.state.myAddText.current.clear()
+        this.setState({placeText:''})
+        this.setState({problemText:''})
+        this.setState({addText:''})
     }
 
     button() {
         Keyboard.dismiss()
-        checkReport(this.state.placeText, this.state.problemText, this.state.addText)
-        
+        if (checkReport(this.state.placeText, this.state.problemText)) {
+            successfulCheckReport(this.state.placeText, this.state.problemText, this.state.addText)
+            this.resetAllFields()
+        } else {
+            failedCheckReport()
+            setTimeout(() => {
+                this.resetAllFields()
+            }, 20000);
+        }
     }
 
     render() {
@@ -56,6 +79,7 @@ export default class Report extends Component {
                     <Text style={styles.question}>There is something wrong at ... *</Text>
                     <View style={styles.inputConShort}>
                         <TextInput 
+                            ref={this.state.myPlaceText}
                             style={styles.inputShort}
                             placeholder='Where? Block? Level?'
                             placeholderTextColor='rgba(0,0,0,0.6)'
@@ -66,6 +90,7 @@ export default class Report extends Component {
                     <Text style={styles.question}>There is something wrong with ... *</Text>
                     <View style={styles.inputConLong}>
                         <TextInput
+                            ref={this.state.myProblemText}
                             style={styles.inputLong}
                             placeholder='What?'
                             placeholderTextColor='rgba(0,0,0,0.6)'
@@ -76,6 +101,7 @@ export default class Report extends Component {
                     <Text style={styles.question}>Any other details to add ...</Text>
                     <View style={styles.inputConLong}>
                         <TextInput
+                            ref={this.state.myAddText}
                             style={styles.inputLong}
                             placeholder='hhddbosnovjdfpmv'
                             placeholderTextColor='rgba(0,0,0,0.6)'

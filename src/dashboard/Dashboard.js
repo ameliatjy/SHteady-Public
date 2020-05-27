@@ -3,24 +3,42 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, Alert, But
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Dialog from "react-native-dialog";
 import Icon from'react-native-vector-icons/FontAwesome';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
+var user = firebase.auth().currentUser;
+var name;
+
+if (user != null) {
+    name = user.displayName;
+}
+
+const handleTaskConfirmation = (taskid, room, task) => {
+    firebase.database().ref('dashboard/' + taskid).set({
+        name: name,
+        room: room,
+        task: task,
+        isInProgress: false,
+    })
+}
 
 
 export default class DashBoard extends Component {
 
     state = {
         names: [
-           {'name': 'Ben', 'id': 1, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Susan', 'id': 2, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Robert', 'id': 3, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Mary', 'id': 4, 'task': 'close my windows', 'isInProgress': false},
-           {'name': 'Daniel', 'id': 5, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Laura', 'id': 6, 'task': 'close my windows', 'isInProgress': false},
-           {'name': 'John', 'id': 7, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Debra', 'id': 8, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Aron', 'id': 9, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Ann', 'id': 10, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Steve', 'id': 11, 'task': 'close my windows', 'isInProgress': true},
-           {'name': 'Olivia', 'id': 12, 'task': 'close my windows', 'isInProgress': true}
+        //    {'name': 'Ben', 'id': 1, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Susan', 'id': 2, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Robert', 'id': 3, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Mary', 'id': 4, 'task': 'close my windows', 'isInProgress': false},
+        //    {'name': 'Daniel', 'id': 5, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Laura', 'id': 6, 'task': 'close my windows', 'isInProgress': false},
+        //    {'name': 'John', 'id': 7, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Debra', 'id': 8, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Aron', 'id': 9, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Ann', 'id': 10, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Steve', 'id': 11, 'task': 'close my windows', 'isInProgress': true},
+        //    {'name': 'Olivia', 'id': 12, 'task': 'close my windows', 'isInProgress': true}
         ],
         dabaoDialogVisible: false,
         groceriesDialogVisible: false,
@@ -35,7 +53,7 @@ export default class DashBoard extends Component {
             'Please help me close my windows!!!',
             [
                 {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
+                {text: 'Confirm', onPress: () => handleTaskConfirmation(5, 'E702', 'close my windows'), style: 'default'},
             ]
         );
     }

@@ -35,8 +35,8 @@ export default class App extends Component {
       <View style={styles.container}>
         <StatusBar barStyle='dark-content'/>
         <OverallNav/>
-        {/* uncomment to avoid login page, test dashboard only
-        <NavigationContainer>
+        {/* uncomment to avoid login page, test dashboard only */}
+        {/* <NavigationContainer>
         <Navbar/>
         </NavigationContainer> */}
       </View>
