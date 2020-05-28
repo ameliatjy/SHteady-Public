@@ -9,6 +9,7 @@ import { NavigationActions } from 'react-navigation';
 
 const Signup = ({navigation}) => {
         const [name, setName] = useState({ value: "", error: "" });
+        const [matric, setMatric] = useState({ value: "", error: ""});
         const [email, setEmail] = useState({ value: "", error: "" });
         const [password, setPassword] = useState({ value: "", error: "" });
         const [confirmPassword, setConfirmPassword] = useState({ value: "", error: " "})
@@ -22,6 +23,7 @@ const Signup = ({navigation}) => {
       
           const response = await signUpUser({
             name: name.value,
+            matric: matric.value,
             email: email.value,
             password: password.value,
             confirmPassword: confirmPassword.value
@@ -32,7 +34,10 @@ const Signup = ({navigation}) => {
           } 
           else {
             Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
-                .then(() => navigation.navigate('Subpages', {screen: 'EditProfile'}))
+                .then(() => navigation.navigate('Subpages', {
+                    screen: 'EditProfile',
+                    params: { name: name.value, matric: matric.value, email: email.value }
+                }))
               //show green message
               //redirect to login page
               // redirect to already logged in profile page
@@ -54,6 +59,16 @@ const Signup = ({navigation}) => {
                             error={!!name.error}
                             errorText={name.error}
                             value={name.value}/>
+                    </View>
+                    <View style={styles.inputBox}>
+                        <TextInput style={styles.inputBoxText} 
+                            placeholder='Matriculation Number'
+                            onChangeText={text => setMatric({ value: text, error: '' })}
+                            placeholderTextColor='#000000'
+                            autoCapitalize="words"
+                            error={!!matric.error}
+                            errorText={matric.error}
+                            value={matric.value}/>
                     </View>
                     <View style={styles.inputBox}>
                         <TextInput style={styles.inputBoxText} 

@@ -6,50 +6,77 @@ import Logo from '../components/Logo';
 import { loginUser } from '../components/auth';
 import { ErrorMsg } from '../components/errormsg';
 
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
 const Login = ({ navigation }) => {
+    const [matric, setMatric] = useState({ value: "", error: "" });
     const [email, setEmail] = useState({ value: "", error: "" });
     const [password, setPassword] = useState({ value: "", error: "" });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-  
+
     const onLoginPressed = async () => {
-      if (loading) return;
-  
-      setLoading(true);
-  
-      const response = await loginUser({
-        email: email.value,
-        password: password.value
-      });
-  
-      if (response.error) {
-        setError(response.error);
-      } else {
-            navigation.navigate('SignedIn', {
-                screen : 'Profile'
+        if (loading) return;
+
+        setLoading(true);
+
+        const response = await loginUser({
+            matric: matric.value,
+            email: email.value,
+            password: password.value
+        });
+
+        if (response.error) {
+            setError(response.error);
+        } else {
+            var room = 'room'
+            var name = 'name'
+            firebase.database().ref('users/' + matric.value).on('value', function (snapshot) {
+                room = snapshot.val().room;
+                name = snapshot.val().name;
             });
-      }
-  
-      setLoading(false);
+            // navigation.navigate('SignedIn', {
+            //     screen: 'Profile',
+            //     params: { name: name, matric: matric.value, email: email.value, room: room },
+            // })
+            // Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
+            //     .then(() => navigation.navigate('Profile', {
+            //         params: { name: name, matric: matric.value, email: email.value, room: room }
+            //     }))
+            Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
+                .then(() => navigation.navigate('Subpages', {
+                    screen: 'EditProfile',
+                    params: { name: name, matric: matric.value, email: email.value, room: room }
+                }));
+        }
+
+        setLoading(false);
     };
 
-    return(
+    return (
         <View style={styles.container}>
-            <Logo/>
+            <Logo />
             <View style={styles.formCon}>
                 <View style={styles.inputBox}>
-                    <TextInput style={styles.inputBoxText} 
+                    <TextInput style={styles.inputBoxText}
+                        placeholder='Matric Number'
+                        placeholderTextColor='#000000'
+                        onChangeText={text => setMatric({ value: text, error: '' })} />
+                </View>
+                <View style={styles.inputBox}>
+                    <TextInput style={styles.inputBoxText}
                         placeholder='Email Address'
                         placeholderTextColor='#000000'
                         keyboardType='email-address'
-                        onChangeText={text => setEmail({ value: text, error: '' })}/>
+                        onChangeText={text => setEmail({ value: text, error: '' })} />
                 </View>
                 <View style={styles.inputBox}>
-                    <TextInput style={styles.inputBoxText} 
+                    <TextInput style={styles.inputBoxText}
                         placeholder='Password'
                         secureTextEntry
                         placeholderTextColor='#000000'
-                        onChangeText={text => setPassword({ value: text, error: '' })}/>
+                        onChangeText={text => setPassword({ value: text, error: '' })} />
                 </View>
                 <TouchableOpacity style={styles.button} onPress={onLoginPressed}>
                     <Text style={styles.buttonText}>Login</Text>
@@ -69,46 +96,46 @@ const Login = ({ navigation }) => {
 export default Login;
 
 const styles = StyleSheet.create({
-    container : {
-        backgroundColor:'#fffde7',
+    container: {
+        backgroundColor: '#fffde7',
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    signupTextCont : {
+    signupTextCont: {
         alignItems: 'center',
         justifyContent: 'flex-end',
         paddingVertical: 50,
         flexDirection: 'row',
     },
-    signupText : {
+    signupText: {
         color: 'rgba(0,0,0,0.8)',
         fontSize: 18,
     },
-    signupButton : {
+    signupButton: {
         color: '#000000',
         fontSize: 18,
         fontWeight: '500',
     },
-    formCon : {
+    formCon: {
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
-    inputBox : {
+    inputBox: {
         backgroundColor: 'rgba(0,0,0,0.3)',
         width: 300,
         height: 40,
         borderRadius: 25,
         marginVertical: 5,
     },
-    inputBoxText : {
+    inputBoxText: {
         flex: 1,
         paddingHorizontal: 16,
         fontSize: 20,
         color: '#000000',
     },
-    button : {
+    button: {
         width: 300,
         height: 40,
         backgroundColor: '#ff7d1d',
@@ -116,7 +143,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         justifyContent: 'center',
     },
-    buttonText : {
+    buttonText: {
         fontSize: 20,
         fontWeight: '500',
         color: '#000000',
@@ -124,4 +151,4 @@ const styles = StyleSheet.create({
     },
 
 
-  });
+});

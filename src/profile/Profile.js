@@ -16,10 +16,6 @@ import Arrow from 'react-native-vector-icons/AntDesign';
 
 export default class Profile extends Component {
 
-    editProfile = () => {
-        this.props.navigation.navigate('Subpages', { screen: 'EditProfile'});
-    }
-
     statusUpdate = () => {
         this.props.navigation.navigate('Subpages', {
             screen: 'Status',
@@ -51,6 +47,25 @@ export default class Profile extends Component {
 
     render() {
         const newStatus = this.props.route.params?.currStatus ?? 'yo hmu i am in'
+        const ccas = this.props.route.params?.currCCAs ?? []
+
+        const name = this.props.route.params?.name ?? 'No name'
+        const matric = this.props.route.params?.matric ?? 'No matric'
+        const email = this.props.route.params?.email ?? 'No email'
+        const room = this.props.route.params?.room ?? 'No room'
+
+        console.log(name)
+        console.log(matric)
+        console.log(email)
+        console.log(room)
+        
+        const editProfile = () => {
+            this.props.navigation.navigate('Subpages', {
+                screen: 'EditProfile',
+                params: { currCCAs: ccas, name: name, matric: matric, email: email, room: room },
+            });
+        }
+
         return(
             <Container style={{ flex: 1, backgroundColor: 'white' }}>
                 <Content>
@@ -59,12 +74,12 @@ export default class Profile extends Component {
                             <View style={{ flex: 1, paddingTop: 30 }}>
                                 <Image source= {require('../images/amelia.jpg')}
                                     style={{width: 200, height: 200, borderRadius: 100, alignSelf: 'center'}}/>
-                                <Text style={{alignSelf: 'center', paddingTop: 30, fontSize: 20 }}>Amelia Tan</Text>
-                                <Text style={{alignSelf: 'center', paddingTop: 10, fontSize: 15 }}>Room Number | Matric Number</Text>
+                                <Text style={{alignSelf: 'center', paddingTop: 30, fontSize: 20 }}>{name}</Text>
+                                <Text style={{alignSelf: 'center', paddingTop: 10, fontSize: 15 }}>{room} | {matric}</Text>
                                 <TouchableOpacity>
                                     <Button bordered dark
                                         style={{ width: 90, height: 26, alignSelf: 'center', marginTop: 10, justifyContent: 'center', borderColor: '#616161'}}
-                                        onPress={this.editProfile}>
+                                        onPress={editProfile}>
                                         <Text style={{ fontSize: 12, color: '#616161'}}>Edit Profile</Text>
                                     </Button>
                                 </TouchableOpacity>
