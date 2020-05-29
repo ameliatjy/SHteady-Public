@@ -5,8 +5,9 @@ export const logoutUser = () => {
     firebase.auth().signOut();
 };
 
-export const signUpUser = async ({ name, email, password, confirmPassword }) => {
+export const signUpUser = async ({ name, matric, email, password, confirmPassword }) => {
     if (name.length <= 0) { return { error: "Name cannot be empty." }
+     } else if (matric.length <= 0) { return { error: "Matric cannot be empty." }
     } else if (email.length <= 0) { return { error: "Email cannot be empty." }
     } else if (password.length <= 0) { return { error: "Password cannot be empty." }
     } else if (password.length < 6) { return { error: "Password cannot be less than 6 characters."}
@@ -15,19 +16,18 @@ export const signUpUser = async ({ name, email, password, confirmPassword }) => 
     } else {
         return firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(function (user) {
-                firebase.database().ref('users/' + name).set({
+                firebase.database().ref('users/' + matric).set({
                     name: name,
+                    matric: matric,
                     email: email
             }) 
-            // .then((userCredentials)=>{
-            //     if(userCredentials.user){
-            //       userCredentials.user.updateProfile({
-            //         displayName: name
-            //       })}}) 
-            var user = firebase.auth().currentUser;
-            // console.log(user.displayName)
+            var current = firebase.auth().currentUser;
+            current.updateProfile({
+                displayName: matric,
+            })
+            console.log(current.displayName)
             // console.log(user);
-            return user;
+            return current;
             // loginUser(user); // Optional
         }, function (error) {
             console.log(error);
@@ -53,13 +53,14 @@ export const signUpUser = async ({ name, email, password, confirmPassword }) => 
     }
 }
 
-export const loginUser = async ({ email, password }) => {
-    if (email.length <= 0) { return { error: "Email cannot be empty." }
+export const loginUser = async ({ matric, email, password }) => {
+    if (matric.length <= 0) { return { error: "Matric number cannot be empty." }
+    } else if (email.length <= 0) { return { error: "Email cannot be empty." }
     } else if (password.length <= 0) { return { error: "Password cannot be empty." }
     } else {
         return firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
-            //var user = firebase.auth().currentUser;
-            return user;
+            var current = firebase.auth().currentUser;
+            return current;
         }, function (error) {
             switch (error.code) {
                 case "auth/invalid-email":

@@ -21,6 +21,7 @@ export default function ProfileSubpagesScreen() {
                     headerTitleStyle: {
                         fontWeight: 'bold',
                     },
+                    gestureEnabled: false
                 }}
             />
             <ProfileSubpagesStack.Screen 

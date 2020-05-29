@@ -1,27 +1,72 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   StyleSheet,
-  View,
   Text,
-  Button,
-} from 'react-native';
+  View,
+  SafeAreaView,
+  SectionList
+} from "react-native";
+import Constants from "expo-constants";
 
-export default class ViewMenu extends Component {
-    render() {
-        return(
-            <View style={styles.container}>
-                <Text>Menu for today is:</Text>
-                <Button title="Menu"/>
-            </View>
-        );
-    }
+const DATA = [
+  {
+    title: "Main dishes",
+    data: ["Pizza", "Burger", "Risotto"]
+  },
+  {
+    title: "Sides",
+    data: ["French Fries", "Onion Rings", "Fried Shrimps"]
+  },
+  {
+    title: "Drinks",
+    data: ["Water", "Coke", "Beer"]
+  },
+  {
+    title: "Desserts",
+    data: ["Cheese Cake", "Ice Cream"]
+  }
+];
+
+const Item = ({ title }) => (
+  <View style={styles.item}>
+    <Text style={styles.title}>{title}</Text>
+  </View>
+);
+
+class viewMenu extends Component {
+  render() {
+    return (
+      <SafeAreaView style={styles.container}>
+        <SectionList
+          sections={DATA}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({ item }) => <Item title={item} />}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text style={styles.header}>{title}</Text>
+          )}
+        />
+      </SafeAreaView>
+    );
+  }
 }
 
+export default viewMenu;
+
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
+  container: {
+    flex: 1,
+    marginTop: Constants.statusBarHeight,
+    marginHorizontal: 16
+  },
+  item: {
+    backgroundColor: "#bdbdbd",
+    padding: 20,
+    marginVertical: 8
+  },
+  header: {
+    fontSize: 18,
+  },
+  title: {
+    fontSize: 12
+  } 
+});
