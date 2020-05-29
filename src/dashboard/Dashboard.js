@@ -6,16 +6,31 @@ import Icon from'react-native-vector-icons/FontAwesome';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
-var user = firebase.auth().currentUser;
-var name;
+// var username
 
-if (user != null) {
-    name = user.displayName;
-}
+// firebase.auth().onAuthStateChanged(function(user) {
+//     if (user) {
+//         username = user.displayName
+//     } else {
+//         username = ''
+//     }
+//   });
+
+// var user = firebase.auth().currentUser;
+// var name;
+
+// if (user != null) {
+//     name = user.displayName;
+// }
+
+// FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
 
 const handleTaskConfirmation = (taskid, room, task) => {
+    username = firebase.database().ref('users/' + room).
     firebase.database().ref('dashboard/' + taskid).set({
-        name: name,
+        name: username,
         room: room,
         task: task,
         isInProgress: false,

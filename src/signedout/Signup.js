@@ -5,6 +5,7 @@ import Logo from '../components/Logo';
 
 import { signUpUser } from '../components/auth';
 import { ErrorMsg } from '../components/errormsg';
+import { NavigationActions } from 'react-navigation';
 
 const Signup = ({navigation}) => {
         const [name, setName] = useState({ value: "", error: "" });
@@ -30,7 +31,8 @@ const Signup = ({navigation}) => {
             setError(response.error);
           } 
           else {
-            navigation.navigate('SignedIn', {screen : 'Profile'})
+            Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
+                .then(() => navigation.navigate('Subpages', {screen: 'EditProfile'}))
               //show green message
               //redirect to login page
               // redirect to already logged in profile page

@@ -13,12 +13,19 @@ export const signUpUser = async ({ name, email, password, confirmPassword }) => 
     } else if (confirmPassword.length <= 0) { return { error: "Please retype your password for confirmation."}
     } else if (confirmPassword != password) { return { error: "Passwords mismatch."}
     } else {
-        return firebase.auth().createUserWithEmailAndPassword(email, password).then(function (user) {
-            firebase.database().ref('users/' + name).set({
-                name: name,
-                email: email
-            })
+        return firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(function (user) {
+                firebase.database().ref('users/' + name).set({
+                    name: name,
+                    email: email
+            }) 
+            // .then((userCredentials)=>{
+            //     if(userCredentials.user){
+            //       userCredentials.user.updateProfile({
+            //         displayName: name
+            //       })}}) 
             var user = firebase.auth().currentUser;
+            // console.log(user.displayName)
             // console.log(user);
             return user;
             // loginUser(user); // Optional
