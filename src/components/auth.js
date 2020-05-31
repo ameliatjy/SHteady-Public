@@ -23,6 +23,7 @@ export const signUpUser = async ({ name, matric, email, password, confirmPasswor
                     email: email,
                     room: 'Enter room number',
                     status: 'yo hmu i am in',
+                    cca: []
             })
             user.user.updateProfile({
                 displayName: matric

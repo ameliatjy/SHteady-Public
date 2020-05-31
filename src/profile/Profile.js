@@ -61,6 +61,7 @@ export default class Profile extends Component {
     componentDidMount() {
         let self = this;
         unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+            console.log('Profile chunk')
             if (user) {
                 self.setState({ matric: user.displayName })
                 firebase.database().ref('users/').child(user.displayName).on('value', async function (snapshot) {

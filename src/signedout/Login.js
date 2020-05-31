@@ -30,7 +30,6 @@ const Login = ({ navigation }) => {
         if (response.error) {
             setError(response.error);
         } else {
-            
             // navigation.navigate('SignedIn', {
             //     screen: 'Profile',
             //     params: { matric: matric.value },

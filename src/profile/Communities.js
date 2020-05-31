@@ -9,26 +9,41 @@ import {
 
 import Arrow from 'react-native-vector-icons/AntDesign';
 
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
+let unsubscribe;
+
 export default class Communities extends Component {
+
     state = {
-        groups: [
-            {
-                id: 0,
-                name: 'SH Volleyball',
-            },
-            {
-                id: 1,
-                name: 'Block A',
-            },
-            {
-                id: 2,
-                name: 'Sports Management Board',
-            }
-        ]
+        groups: []
     }
 
     goToCommunity = () => {
         Alert.alert('Going to check members of this community');
+    }
+
+    componentDidMount() {
+        let self = this;
+        unsubscribe = firebase.auth().onAuthStateChanged(async function (user) {
+            console.log('Communities chunk')
+            if (user) {
+                await self.setState({ matric: user.displayName })
+                await firebase.database().ref('users/').child(user.displayName).on('value', async function (snapshot) {
+                    var grps = await snapshot.val().cca
+                    typeof grps === 'undefined'
+                    ? await self.setState({ groups: [] })
+                    : await self.setState({ groups: snapshot.val().cca })
+                })
+            } else {
+                console.log('user not signed in')
+            }
+        })
+    }
+
+    componentWillUnmount() {
+        unsubscribe()
     }
 
     render() {
@@ -37,12 +52,12 @@ export default class Communities extends Component {
                 {
                     this.state.groups.map((item, index) => (
                         <TouchableOpacity
-                            key = {item.id}
+                            key = {index}
                             style = {styles.container}
                             onPress = {this.goToCommunity}>
                                 <View style={{flexDirection:'row'}}>
                                     <Text style={styles.text}>
-                                        {item.name}
+                                        {item}
                                     </Text>
                                     <Arrow name="right" size={20} style={{flex: 1, alignSelf:"flex-end"}}/>
                                 </View>

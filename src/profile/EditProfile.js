@@ -18,7 +18,7 @@ let unsubscribe;
 
 export default class EditProfile extends Component {
     state = {
-        initialSelected: this.props.route.params?.currCCAs ?? [],
+        initialSelected: [],
         selectedItems: [],
         matric: null,
         currname: null,
@@ -60,11 +60,12 @@ export default class EditProfile extends Component {
 
     onSelectedItems = selectedCCAs => {
         this.setState({ selectedCCAs });
-    };
+    }
 
     componentDidMount() {
         let self = this;
         unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+            console.log('EditProfile chunk')
             if (user) {
                 console.log('user is signed in!')
                 console.log('user:', user)
@@ -73,6 +74,10 @@ export default class EditProfile extends Component {
                     await self.setState({ currname: snapshot.val().name })
                     await self.setState({ curremail: snapshot.val().email }) 
                     await self.setState({ currroom: snapshot.val().room })
+                    var grps = await snapshot.val().cca
+                    typeof grps === 'undefined'
+                    ? await self.setState({ initialSelected: [] })
+                    : await self.setState({ initialSelected: snapshot.val().cca })
                 })
             } else {
                 console.log('user not signed in')
@@ -85,14 +90,22 @@ export default class EditProfile extends Component {
     }
     
     render() {
-        const curr = this.props.route.params?.currCCAs ?? []
+        //const curr = this.props.route.params?.currCCAs ?? []
         const { selectedCCAs } = this.state;
+        const curr = this.state.initialSelected;
 
         console.log('thismatric:', this.state)
 
         const updateRoom = async (text) => {
             this.state.currroom = text,
             await firebase.database().ref('users/' + this.state.matric).child('room').set(this.state.currroom)
+        }
+
+        const onSave = async () => {
+            typeof selectedCCAs === 'undefined'
+            ? await firebase.database().ref('users/' + this.state.matric).child('cca').set([])
+            : await firebase.database().ref('users/' + this.state.matric).child('cca').set(selectedCCAs);
+            this.props.navigation.navigate('Profile', { currCCAs: selectedCCAs, matric: this.state.matric });
         }
         
         return (
@@ -143,13 +156,13 @@ export default class EditProfile extends Component {
                         styleItemsContainer={{maxHeight: 150}}
                     />
                     <Text>
-                        {typeof curr === 'undefined' ? 'None selected yet.' : 'Current CCAs Logged In: ' + curr.join(', ')}
+                        {typeof this.state.initialSelected === 'undefined' ? 'None selected yet.' : 'Current CCAs Logged In: ' + this.state.initialSelected.join(', ')}
                     </Text>
                     <Text>
                         {typeof selectedCCAs === 'undefined' ? 'New Edit: ' : 'Updated CCAs: ' + selectedCCAs.join(', ')}
                     </Text>
                     <Button style={{backgroundColor: '#ffd4b3',marginTop: 20, width: 300, height: 50, justifyContent: 'center', alignSelf: 'center'}}
-                        onPress={() => this.props.navigation.navigate('Profile', { currCCAs: selectedCCAs, matric: this.state.matric })}>
+                        onPress={onSave}>
                         <Text>Save Changes</Text>
                     </Button>
             </View>
