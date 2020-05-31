@@ -10,6 +10,9 @@ import {
   Keyboard
 } from 'react-native';
 
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
 export default class Status extends Component {
 
     constructor(props) {
@@ -32,6 +35,11 @@ export default class Status extends Component {
             {cancelable: false}
         );
         Keyboard.dismiss();
+    }
+
+    matric = this.props.route.params?.matric ?? 'no matric'
+    updateDatabase = (stat) => {
+        firebase.database().ref('users/' + this.matric).child('status').set(stat)
     }
 
     render() {
@@ -60,7 +68,10 @@ export default class Status extends Component {
                         <TouchableOpacity
                             key = {item.id}
                             style = {styles.container}
+                            // onPress = {this.updateDatabase}
+                            // onPress = {() => this.props.navigation.navigate('Profile', { matric: this.matric })}>
                             onPress = {item => this.setState(item.avail)}
+                            onPress = {() => this.updateDatabase(item.avail)}
                             onPress = {() => this.props.navigation.navigate('Profile', { currStatus: item.avail })}>
                                 <Text style={styles.text}>
                                     {item.avail}
@@ -72,6 +83,8 @@ export default class Status extends Component {
                         style={{height:58, marginTop: 10, backgroundColor: 'white'}}
                         multiline={true}
                         placeholder="Customise your status here!"
+                        // onChangeText={this.updateDatabase}
+                        // onSubmitEditing={() => this.props.navigation.navigate('Profile', { matric: this.matric })}/>
                         onChangeText={newStatus => {this.state.avail = newStatus}}
                         onSubmitEditing={this.updatedStatus}/>
             </View>

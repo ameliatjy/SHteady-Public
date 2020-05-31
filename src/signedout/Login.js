@@ -30,25 +30,17 @@ const Login = ({ navigation }) => {
         if (response.error) {
             setError(response.error);
         } else {
-            var room = 'room'
-            var name = 'name'
-            firebase.database().ref('users/' + matric.value).on('value', function (snapshot) {
-                room = snapshot.val().room;
-                name = snapshot.val().name;
-            });
+            
             // navigation.navigate('SignedIn', {
             //     screen: 'Profile',
-            //     params: { name: name, matric: matric.value, email: email.value, room: room },
+            //     params: { matric: matric.value },
             // })
             // Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
             //     .then(() => navigation.navigate('Profile', {
-            //         params: { name: name, matric: matric.value, email: email.value, room: room }
+            //         params: { matric: matric.value }
             //     }))
             Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
-                .then(() => navigation.navigate('Subpages', {
-                    screen: 'EditProfile',
-                    params: { name: name, matric: matric.value, email: email.value, room: room }
-                }));
+                .then(() => navigation.navigate('Profile'));
         }
 
         setLoading(false);

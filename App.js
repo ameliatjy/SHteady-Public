@@ -26,7 +26,7 @@ if (!firebase.apps.length) {
     firebase.app().delete().then(function() {
         firebase.initializeApp(firebaseConfig);
     });
-}  
+}
 
 export default class App extends Component {
 

@@ -7,6 +7,9 @@ import { signUpUser } from '../components/auth';
 import { ErrorMsg } from '../components/errormsg';
 import { NavigationActions } from 'react-navigation';
 
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
 const Signup = ({navigation}) => {
         const [name, setName] = useState({ value: "", error: "" });
         const [matric, setMatric] = useState({ value: "", error: ""});
@@ -33,11 +36,17 @@ const Signup = ({navigation}) => {
             setError(response.error);
           } 
           else {
-            Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
+            
+                Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
                 .then(() => navigation.navigate('Subpages', {
                     screen: 'EditProfile',
-                    params: { name: name.value, matric: matric.value, email: email.value }
+                    params: { matric: matric.value }
                 }))
+            // Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
+            //     .then(() => navigation.navigate('Subpages', {
+            //         screen: 'EditProfile',
+            //         params: { matric: matric.value }
+            //     }))
               //show green message
               //redirect to login page
               // redirect to already logged in profile page

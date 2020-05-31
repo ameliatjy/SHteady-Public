@@ -19,6 +19,10 @@ export default class EditProfile extends Component {
     state = {
         initialSelected: this.props.route.params?.currCCAs ?? [],
         selectedItems: [],
+        matric: null,
+        currname: null,
+        curremail: null,
+        currroom: null
     };
 
     things = [{
@@ -56,22 +60,34 @@ export default class EditProfile extends Component {
     onSelectedItems = selectedCCAs => {
         this.setState({ selectedCCAs });
     };
+
+    componentDidMount() {
+        let self = this;
+        firebase.auth().onAuthStateChanged(async function (user) {
+            if (user) {
+                console.log('user is signed in!')
+                console.log('user:', user)
+                self.setState({ matric: user.displayName })
+                await firebase.database().ref('users/').child(user.displayName).on('value', function(snapshot) {
+                    self.setState({ currname: snapshot.val().name })
+                    self.setState({ curremail: snapshot.val().email }) 
+                    self.setState({ currroom: snapshot.val().room })
+                })
+            } else {
+                console.log('user not signed in')
+            }
+        })
+    }
     
     render() {
         const curr = this.props.route.params?.currCCAs ?? []
         const { selectedCCAs } = this.state;
 
-        const matric = this.props.route.params?.matric ?? 'no matric'
-        const email = this.props.route.params?.email ?? 'no email'
-        var room = this.props.route.params?.room?? 'Enter room number'
-        var name = 'name'
-        firebase.database().ref('users/' + matric).on('value', function(snapshot) {
-            name = snapshot.val().name;
-        })
+        console.log('thismatric:', this.state)
 
         const updateRoom = (text) => {
-            room = text,
-            firebase.database().ref('users/' + matric).child('room').set(room)
+            this.state.currroom = text,
+            firebase.database().ref('users/' + this.state.matric).child('room').set(this.state.currroom)
         }
         
         return (
@@ -80,24 +96,24 @@ export default class EditProfile extends Component {
                         <Text>Name:</Text>
                         <TextInput style={{width: 200, height: 30, backgroundColor: 'white'}}
                         multiline={false}
-                        placeholder={name} />
+                        placeholder={this.state.currname} />
                     </View>
                     <View style={{flexDirection: 'row', margin: 8, justifyContent: 'space-between'}}>
                         <Text>Matriculation Number:</Text>
                         <TextInput style={{width: 200, height: 30, backgroundColor: 'white'}}
                         multiline={false}
-                        placeholder={matric} />
+                        placeholder={this.state.matric} />
                     </View>
                     <View style={{flexDirection: 'row', margin: 8, justifyContent: 'space-between'}}>
                         <Text>Room Number:</Text>
                         <TextInput style={{width: 200, height: 30, backgroundColor: 'white'}}
                         multiline={false}
-                        placeholder={room}
+                        placeholder={this.state.currroom}
                         onChangeText={updateRoom}/>
                     </View>
                     <View style={{flexDirection: 'row', margin: 8}}>
                         <Text style={{flex:5}}>Email:</Text>
-                        <Text style={styles.noEditText}>{email}</Text>
+                        <Text style={styles.noEditText}>{this.state.curremail}</Text>
                     </View>
                     <MultiSelect
                         hideTags
@@ -128,7 +144,7 @@ export default class EditProfile extends Component {
                         {typeof selectedCCAs === 'undefined' ? 'New Edit: ' : 'Updated CCAs: ' + selectedCCAs.join(', ')}
                     </Text>
                     <Button style={{backgroundColor: '#ffd4b3',marginTop: 20, width: 300, height: 50, justifyContent: 'center', alignSelf: 'center'}}
-                        onPress={() => this.props.navigation.navigate('Profile', { currCCAs: selectedCCAs, name: name, email: email, matric: matric, room: room })}>
+                        onPress={() => this.props.navigation.navigate('Profile', { currCCAs: selectedCCAs, matric: this.state.matric })}>
                         <Text>Save Changes</Text>
                     </Button>
             </View>

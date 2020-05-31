@@ -19,7 +19,9 @@ export const signUpUser = async ({ name, matric, email, password, confirmPasswor
                 firebase.database().ref('users/' + matric).set({
                     name: name,
                     matric: matric,
-                    email: email
+                    email: email,
+                    room: 'Please enter room number',
+                    status: 'yo hmu i am in'
             }) 
             var current = firebase.auth().currentUser;
             current.updateProfile({
@@ -59,8 +61,8 @@ export const loginUser = async ({ matric, email, password }) => {
     } else if (password.length <= 0) { return { error: "Password cannot be empty." }
     } else {
         return firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
-            var current = firebase.auth().currentUser;
-            return current;
+            //var current = firebase.auth().currentUser;
+            return user;
         }, function (error) {
             switch (error.code) {
                 case "auth/invalid-email":
