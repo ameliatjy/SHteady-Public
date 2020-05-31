@@ -14,6 +14,7 @@ import { Button } from 'native-base';
 import { TextInput } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
   
+let unsubscribe;
 
 export default class EditProfile extends Component {
     state = {
@@ -63,20 +64,24 @@ export default class EditProfile extends Component {
 
     componentDidMount() {
         let self = this;
-        firebase.auth().onAuthStateChanged(async function (user) {
+        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 console.log('user is signed in!')
                 console.log('user:', user)
                 self.setState({ matric: user.displayName })
-                await firebase.database().ref('users/').child(user.displayName).on('value', function(snapshot) {
-                    self.setState({ currname: snapshot.val().name })
-                    self.setState({ curremail: snapshot.val().email }) 
-                    self.setState({ currroom: snapshot.val().room })
+                firebase.database().ref('users/').child(user.displayName).on('value', async function(snapshot) {
+                    await self.setState({ currname: snapshot.val().name })
+                    await self.setState({ curremail: snapshot.val().email }) 
+                    await self.setState({ currroom: snapshot.val().room })
                 })
             } else {
                 console.log('user not signed in')
             }
         })
+    }
+
+    componentWillUnmount() {
+        unsubscribe()
     }
     
     render() {
@@ -85,9 +90,9 @@ export default class EditProfile extends Component {
 
         console.log('thismatric:', this.state)
 
-        const updateRoom = (text) => {
+        const updateRoom = async (text) => {
             this.state.currroom = text,
-            firebase.database().ref('users/' + this.state.matric).child('room').set(this.state.currroom)
+            await firebase.database().ref('users/' + this.state.matric).child('room').set(this.state.currroom)
         }
         
         return (

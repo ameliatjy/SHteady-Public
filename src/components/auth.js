@@ -16,20 +16,25 @@ export const signUpUser = async ({ name, matric, email, password, confirmPasswor
     } else {
         return firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(function (user) {
+                console.log('matric:', matric)
                 firebase.database().ref('users/' + matric).set({
                     name: name,
                     matric: matric,
                     email: email,
-                    room: 'Please enter room number',
-                    status: 'yo hmu i am in'
-            }) 
-            var current = firebase.auth().currentUser;
-            current.updateProfile({
-                displayName: matric,
+                    room: 'Enter room number',
+                    status: 'yo hmu i am in',
             })
-            console.log(current.displayName)
-            // console.log(user);
-            return current;
+            user.user.updateProfile({
+                displayName: matric
+            })
+            return user.user
+            // var current = firebase.auth().currentUser;
+            // current.updateProfile({
+            //     displayName: matric,
+            // })
+            // console.log(current.displayName)
+            // // console.log(user);
+            // return current;
             // loginUser(user); // Optional
         }, function (error) {
             console.log(error);
