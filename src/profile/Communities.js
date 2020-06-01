@@ -24,6 +24,21 @@ export default class Communities extends Component {
         Alert.alert('Going to check members of this community');
     }
 
+    // arr = []
+    // componentDidMount() {
+    //     let self = this;
+    //     let arrhelp
+    //     unsubscribe = firebase.auth().onAuthStateChanged(async function (user) {
+    //         if (user) {
+    //             await firebase.database().ref('users/').child(user.displayName).on('value', async function (snapshot) {
+    //                 typeof snapshot.val().cca === 'undefined'
+    //                 ? arrhelp = []
+    //                 : arrhelp = snapshot.val().cca
+    //             })
+    //         }
+    //     })
+    // }
+
     componentDidMount() {
         let self = this;
         unsubscribe = firebase.auth().onAuthStateChanged(async function (user) {
@@ -47,6 +62,7 @@ export default class Communities extends Component {
     }
 
     render() {
+        //await this.setState({ groups: arr })
         return(
             <View>
                 {
