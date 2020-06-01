@@ -3,76 +3,52 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, Alert, But
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Dialog from "react-native-dialog";
 import Icon from'react-native-vector-icons/FontAwesome';
-// import moment from 'moment';
+import moment from 'moment';
 
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
-// var user = firebase.auth().currentUser;
-// if (user) {
-//     var matric = user.displayName
-//     var currroom, currname
-//     firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
-//         currroom = snapshot.val().room;
-//         currname = snapshot.val().name;
-//         })
-// } else {
-
-// }
-
-// var query = firebase.database().ref("dashboard").orderByKey();
-// query.once("value")
-//     .then(function(snapshot) {
-//         snapshot.forEach(function(childSnapshot) {
-//             var childKey = childSnapshot.key;
-//             var childName = childSnapshot.val().name;
-//             var childRoom = childSnapshot.val().room;
-//             var childTask = childSnapshot.val().task;
-//             var childIsInProgress = childSnapshot.val().childIsInProgress;
-//     });
-// });
-
 export default class DashBoard extends Component {
 
     state = {
-        // names: [
-        //    {'name': 'Ben', 'id': 1, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Susan', 'id': 2, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Robert', 'id': 3, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Mary', 'id': 4, 'task': 'close my windows', 'isInProgress': false},
-        //    {'name': 'Daniel', 'id': 5, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Laura', 'id': 6, 'task': 'close my windows', 'isInProgress': false},
-        //    {'name': 'John', 'id': 7, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Debra', 'id': 8, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Aron', 'id': 9, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Ann', 'id': 10, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Steve', 'id': 11, 'task': 'close my windows', 'isInProgress': true},
-        //    {'name': 'Olivia', 'id': 12, 'task': 'close my windows', 'isInProgress': true}
-        // ],
         dabaoDialogVisible: false,
         groceriesDialogVisible: false,
         othersDialogVisible: false,
         datetimePickerVisibility: false,
+        dabaoText: '',
+        groceriesText: '',
+        othersText: '',
+        dashboard: {},
+        // presentdb???
+    }
+
+    componentDidMount() {
+        firebase.database().ref('/dashboard').on('value', querySnapShot => {
+            let data = querySnapShot.val() ? querySnapShot.val() : {};
+            let dashboardItems = {...data};
+            this.setState({
+                dashboard: dashboardItems,
+            });
+        });
     }
 
 
-    oneTimeTaskConfirmation = (currtask) => {
+    oneTimeTaskConfirmation = (currtask, moreInfo) => {
         var user = firebase.auth().currentUser;
-        // if (user) {
-            var matric = user.displayName
-            var currroom, currname
-            firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
-                currroom = snapshot.val().room;
-                currname = snapshot.val().name;
-                })
-        // } else {
 
-        // }
+        var matric = user.displayName
+        var currroom, currname
+        firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+            currroom = snapshot.val().room;
+            currname = snapshot.val().name;
+        })
+
         var newRequest = firebase.database().ref('dashboard/').push();
         newRequest.set({
             name: currname,
             room: currroom,
             task: currtask,
+            addionalInfo: moreInfo,
             isInProgress: false
         })
         // delete tasks after a period of time
@@ -87,7 +63,7 @@ export default class DashBoard extends Component {
             'Please help me close my windows!!!',
             [
                 {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('close my windows'), style: 'default'},
+                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please close my windows!', ''), style: 'default'},
             ]
         );
     }
@@ -97,6 +73,7 @@ export default class DashBoard extends Component {
     }
      
     dabaoHandleConfirm = () => {
+        this.oneTimeTaskConfirmation('Please help me dabao commhall!', 'Food to daobao:\n' + this.state.dabaoText)
         this.setState({ dabaoDialogVisible: false });
     }
      
@@ -115,7 +92,7 @@ export default class DashBoard extends Component {
     }
      
     wakeupHandleConfirm = (datetime) => {
-        this.oneTimeTaskConfirmation('Please wake me up: ' + datetime)
+        this.oneTimeTaskConfirmation('Please wake me up!', moment(datetime).format('llll'))
         this.hideDatetimePicker();
     }
 
@@ -125,7 +102,7 @@ export default class DashBoard extends Component {
             'Halim coming!!! Help me hide my aircon PLEASE!!!',
             [
                 {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('hide my aircon'), style: 'default'},
+                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please hide my aircon!', ''), style: 'default'},
             ]
         );
     }
@@ -135,6 +112,7 @@ export default class DashBoard extends Component {
     }
      
     groceriesHandleConfirm = () => {
+        this.oneTimeTaskConfirmation('Please help me get groceries!', this.state.groceriesText)
         this.setState({ groceriesDialogVisible: false });
     }
      
@@ -149,6 +127,7 @@ export default class DashBoard extends Component {
     }
      
     othersHandleConfirm = () => {
+        this.oneTimeTaskConfirmation('Please help me with something!', this.state.othersText)
         this.setState({ othersDialogVisible: false });
     }
      
@@ -166,61 +145,47 @@ export default class DashBoard extends Component {
         }
     }
 
-    helpWithTaskButton = (isInProgress) => {
-        if (isInProgress) {
+    helpTask = (key) => {
+        firebase.database().ref('dashboard/' + key).update({
+            isInProgress: true
+        })
+    }
+
+    completeTask = (key) => {
+        firebase.database().ref('dashboard/' + key).remove()
+    }
+
+    helpWithTaskButton = (key) => {
+        const item = this.state.dashboard[key]
+        if (item.isInProgress) {
             Alert.alert(
                 'Help On The Way!',
                 'Thank you for offering your help!\n' +
                 'Please confirm that the task has been completed!',
                 [
                     {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                    {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
+                    {text: 'Confirm', onPress: () => this.completeTask(key), style: 'default'},
                 ]
                 // onpress(confirm) delete the task
             );
         } else {
             Alert.alert(
-                'Help Needed!!!',
-                'Task: ' + item.task + '\n' + 'Room Number: ' + item.id,
+                // think of possible ways to change this
+                item.task,
+                item.addionalInfo + '\n' + 'Room Number: ' + item.room,
                 [
-                    {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                    {text: 'Confirm', onPress: () => console.warn('CONFIRM Pressed'), style: 'default'},
+                    {text: 'Cancel', onPress: () => console.warn('cancel pressed'), style: 'cancel'},
+                    {text: 'Confirm', onPress: () => this.helpTask(key), style: 'default'},
                 ]
                 // onpress(confirm) change task taskinprogress:true
             );
         }
     }
 
-    // HOW HOW HOW WHAT THE HECK EVEN I WANT TO CRY
-    getDashboard = () => {
-        var query = firebase.database().ref("dashboard").orderByKey();
-        var childKey, childName, childRoom, childTask, childIsInProgress
-        query.once("value")
-            .then(function(snapshot) {
-                snapshot.forEach(function(childSnapshot) {
-                    this.childKey = childSnapshot.key;
-                    this.childName = childSnapshot.val().name;
-                    this.childRoom = childSnapshot.val().room;
-                    this.childTask = childSnapshot.val().task;
-                    this.childIsInProgress = childSnapshot.val().childIsInProgress;
-                });
-            });
-        // if (data == 'key') {
-        //     return childKey
-        // } else if (data == 'name') {
-        //     return childName
-        // } else if (data == 'room') {
-        //     return childRoom
-        // } else if (data == 'task') {
-        //     return childTask
-        // } else if (data == 'isInProgress') {
-        //     return childIsInProgress
-        // } else {
-
-        // }
-    }
-
     render() {
+
+        let dashboardKeys = Object.keys(this.state.dashboard);
+
         return(
             <View style={styles.container}>
                 {/* <View style={{flex: 0.5, justifyContent: 'space-between' }}> */}
@@ -243,7 +208,9 @@ export default class DashBoard extends Component {
                             <Dialog.Description>
                                 Help me dabao please!!! I don't want to starve :')
                             </Dialog.Description>
-                            <Dialog.Input placeholder={'Input dishes to dabao'}/>
+                            <Dialog.Input 
+                                placeholder={'Input dishes to dabao'}
+                                onChangeText={(inputText) => this.setState({dabaoText: inputText})}/>
                             <Dialog.Button label="Cancel" onPress={this.dabaoHandleClose} style={{fontWeight: '500'}}/>
                             <Dialog.Button label="Confirm" onPress={this.dabaoHandleConfirm}/>
                         </Dialog.Container>
@@ -262,6 +229,7 @@ export default class DashBoard extends Component {
                             headerTextIOS={'Please wake me up at'}
                             onConfirm={this.wakeupHandleConfirm}
                             onCancel={this.hideDatetimePicker}
+                            date={new Date()}
                             // minimumDate={new Date(moment().utcOffset('+08:00').format('MMMM Do YYYY, h:mm:ss a'))}
                         />
                     </View>
@@ -283,7 +251,9 @@ export default class DashBoard extends Component {
                             <Dialog.Description>
                                 Please help me restore my personal pantry :')
                             </Dialog.Description>
-                            <Dialog.Input placeholder={'Input groceries to be bought'}/>
+                            <Dialog.Input 
+                                placeholder={'Input groceries to be bought'}
+                                onChangeText={(inputText) => this.setState({groceriesText: inputText})}/>
                             <Dialog.Button label="Cancel" onPress={this.groceriesHandleClose} style={{fontWeight: '500'}}/>
                             <Dialog.Button label="Confirm" onPress={this.groceriesHandleConfirm}/>
                         </Dialog.Container>
@@ -300,7 +270,9 @@ export default class DashBoard extends Component {
                             <Dialog.Description>
                                 Please help me ...
                             </Dialog.Description>
-                            <Dialog.Input placeholder={'Input help needed'}/>
+                            <Dialog.Input 
+                                placeholder={'Input help needed'}
+                                onChangeText={(inputText) => this.setState({othersText: inputText})}/>
                             <Dialog.Button label="Cancel" onPress={this.othersHandleClose} style={{fontWeight: '500'}}/>
                             <Dialog.Button label="Confirm" onPress={this.othersHandleConfirm}/>
                         </Dialog.Container>
@@ -310,34 +282,30 @@ export default class DashBoard extends Component {
 
                 <View style={styles.taskCon}>
                     <Text style={styles.title}>Current Help Needed!!</Text>
-                    <ScrollView>
-                    {
-                        <View key = {this.childKey} style = {styles.item}>
-                            <View style={styles.task}>
-                                <View>
-                                    <Text style={styles.taskHeader}>{this.childName}</Text>
-                                    <Text style={styles.taskBody}>{this.childTask}</Text>
+                    {dashboardKeys.length > 0 ? (
+                        <ScrollView>
+                        {
+                            dashboardKeys.map((key) => (
+                                <View key = {key}  style = {styles.item}>
+                                    <TouchableOpacity style={styles.task} onPress={() => this.helpWithTaskButton(key)}>
+                                        <View>
+                                            <Text style={styles.taskHeader}>{this.state.dashboard[key].name}</Text>
+                                            <Text style={styles.taskBody}>{this.state.dashboard[key].task}</Text>
+                                        </View>
+                                        <View style={styles.taskProgress}>
+                                            <Icon name='circle' size={45} style={this.checkTaskProgress(this.state.dashboard[key].isInProgress)}/>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
-                                <TouchableOpacity style={styles.taskProgress} onPress={() => this.helpWithTaskButton(this.childIsInProgress)}>
-                                    <Icon name='circle' size={45} style={this.checkTaskProgress(this.childIsInProgress)}/>
-                                </TouchableOpacity>
-                            </View>
+                            ))
+                        }
+                        </ScrollView>
+                    ) : (
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{fontSize: 18}}>No one needs your help for now!</Text>
+                            <Text style={{fontSize: 18}}>Thank you! :)</Text>
                         </View>
-                        // this.state.names.map((item, index) => (
-                        //     <View key = {item.id} style = {styles.item}>
-                        //         <View style={styles.task}>
-                        //             <View>
-                        //                 <Text style={styles.taskHeader}>{item.name}</Text>
-                        //                 <Text style={styles.taskBody}>{item.task}</Text>
-                        //             </View>
-                        //             <TouchableOpacity style={styles.taskProgress} onPress={() => this.helpWithTaskButton(item)}>
-                        //                 <Icon name='circle' size={45} style={this.checkTaskProgress(item.isInProgress)}/>
-                        //             </TouchableOpacity>
-                        //         </View>
-                        //     </View>
-                        // ))
-                    }
-                    </ScrollView>
+                    )}
                 </View>
                 
             </View>
