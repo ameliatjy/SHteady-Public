@@ -12,8 +12,6 @@ import Arrow from 'react-native-vector-icons/AntDesign';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
-let unsubscribe;
-
 export default class Communities extends Component {
 
     state = {
@@ -24,32 +22,20 @@ export default class Communities extends Component {
         Alert.alert('Going to check members of this community');
     }
 
-    // arr = []
-    // componentDidMount() {
-    //     let self = this;
-    //     let arrhelp
-    //     unsubscribe = firebase.auth().onAuthStateChanged(async function (user) {
-    //         if (user) {
-    //             await firebase.database().ref('users/').child(user.displayName).on('value', async function (snapshot) {
-    //                 typeof snapshot.val().cca === 'undefined'
-    //                 ? arrhelp = []
-    //                 : arrhelp = snapshot.val().cca
-    //             })
-    //         }
-    //     })
-    // }
-
-    componentDidMount() {
+    getDeets = () => {
         let self = this;
-        unsubscribe = firebase.auth().onAuthStateChanged(async function (user) {
+        firebase.auth().onAuthStateChanged(function (user) {
             console.log('Communities chunk')
             if (user) {
-                await self.setState({ matric: user.displayName })
-                await firebase.database().ref('users/').child(user.displayName).on('value', async function (snapshot) {
-                    var grps = await snapshot.val().cca
+                self.setState({ matric: user.displayName })
+                firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
+                    var grps = snapshot.val().cca
                     typeof grps === 'undefined'
-                    ? await self.setState({ groups: [] })
-                    : await self.setState({ groups: snapshot.val().cca })
+                    ? self.setState({ groups: [] })
+                    : self.setState({ groups: snapshot.val().cca })
+                    while (self.state.matric == null || self.state.groups == null) {
+                        setTimeout(function() {}, 3000);
+                    }
                 })
             } else {
                 console.log('user not signed in')
@@ -57,12 +43,12 @@ export default class Communities extends Component {
         })
     }
 
-    componentWillUnmount() {
-        unsubscribe()
+    componentDidMount() {
+        this.getDeets();
     }
 
     render() {
-        //await this.setState({ groups: arr })
+
         return(
             <View>
                 {
