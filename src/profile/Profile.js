@@ -12,10 +12,9 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/storage';
 
-import { Container, Content, Button } from 'native-base';
+import { Button } from 'native-base';
 import Arrow from 'react-native-vector-icons/AntDesign';
 
-import { ErrorMsg } from '../components/errormsg';
 import { Snackbar } from "react-native-paper";
 
 import * as ImagePicker from 'expo-image-picker';
@@ -168,16 +167,13 @@ export default class Profile extends Component {
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 1, paddingTop: 30 }}>
                     <TouchableOpacity onPress={this.handleOnPress}>
-                    <Image style={styles.images} source={{ uri: this.state.avatarUrl }} />
+                        <Image style={styles.profilepic} source={{ uri: this.state.avatarUrl }} />
                     </TouchableOpacity>
-                    {/* <Button onPress={this.handleOnPress}>
-                        <Text>Choose photo</Text>
-                    </Button> */}
-                    <Text style={{ alignSelf: 'center', paddingTop: 30, fontSize: 20 }}>{this.state.currname}</Text>
-                    <Text style={{ alignSelf: 'center', paddingTop: 10, fontSize: 15 }}>{this.state.currroom} | {this.state.matric}</Text>
+                    <Text style={styles.name}>{this.state.currname}</Text>
+                    <Text style={styles.details}>{this.state.currroom} | {this.state.matric}</Text>
                     <TouchableOpacity>
                         <Button bordered dark
-                            style={{ width: 90, height: 26, alignSelf: 'center', marginTop: 10, justifyContent: 'center', borderColor: '#616161' }}
+                            style={styles.editprofilebtn}
                             onPress={editProfile}>
                             <Text style={{ fontSize: 12, color: '#616161' }}>Edit Profile</Text>
                         </Button>
@@ -185,23 +181,23 @@ export default class Profile extends Component {
 
                     <TouchableOpacity onPress={this.statusUpdate}>
                         <View style={{ flexDirection: 'row', paddingTop: 30, marginLeft: 50, marginRight: 50 }}>
-                            <Text style={{ flex: 5, fontSize: 16, justifyContent: 'flex-start', color: '#616161' }}>Status</Text>
-                            <Text style={{ flex: 4, fontSize: 10, textAlign: 'right', marginRight: 10, color: '#616161' }}>{this.state.status}</Text>
-                            <Arrow name="right" size={40} style={{ flex: 1, justifyContent: 'flex-end', color: '#616161' }} />
+                            <Text style={styles.statussubpage}>Status</Text>
+                            <Text style={styles.statusdisplay}>{this.state.status}</Text>
+                            <Arrow name="right" size={40} style={styles.arrow} />
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={this.viewCommunities}>
-                        <View style={{ borderBottomColor: 'orange', borderBottomWidth: 1, marginTop: 10, marginBottom: 10, marginLeft: 50, marginRight: 50 }}></View>
+                        <View style={styles.orangeline}></View>
                         <View style={{ flexDirection: 'row', paddingTop: 8, marginLeft: 50, marginRight: 50 }}>
-                            <Text style={{ flex: 9, fontSize: 16, justifyContent: 'flex-start', color: '#616161' }}>Communities</Text>
-                            <Arrow name="right" size={40} style={{ flex: 1, justifyContent: 'flex-end', color: '#616161' }} />
+                            <Text style={styles.communitysubpage}>Communities</Text>
+                            <Arrow name="right" size={40} style={styles.arrow} />
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={this.signOut}>
-                        <View style={{ borderBottomColor: 'orange', borderBottomWidth: 1, marginTop: 10, marginBottom: 10, marginLeft: 50, marginRight: 50 }}></View>
-                        <Text style={{ marginLeft: 50, paddingTop: 16, color: '#616161', fontSize: 16 }}>Sign Out</Text>
+                        <View style={styles.orangeline}></View>
+                        <Text style={styles.signoutbtn}>Sign Out</Text>
                     </TouchableOpacity>
                 </View>
                 <Snackbar
@@ -229,10 +225,66 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    images: {
+    profilepic: {
         width: 200,
         height: 200,
         borderRadius: 100,
         alignSelf: 'center'
+    },
+    editprofilebtn: {
+        width: 90,
+        height: 26,
+        alignSelf: 'center',
+        marginTop: 10,
+        justifyContent: 'center',
+        borderColor: '#616161'
+    },
+    name: {
+        alignSelf: 'center',
+        paddingTop: 30,
+        fontSize: 20
+    },
+    details: {
+        alignSelf: 'center',
+        paddingTop: 10,
+        fontSize: 15
+    },
+    orangeline: {
+        borderBottomColor: 'orange',
+        borderBottomWidth: 1,
+        marginTop: 10,
+        marginBottom: 10,
+        marginLeft: 50,
+        marginRight: 50
+    },
+    statussubpage: {
+        flex: 5,
+        fontSize: 16,
+        justifyContent: 'flex-start',
+        color: '#616161'
+    },
+    statusdisplay: {
+        flex: 4,
+        fontSize: 10,
+        textAlign: 'right',
+        marginRight: 10,
+        color: '#616161'
+    },
+    communitysubpage: {
+        flex: 9,
+        fontSize: 16,
+        justifyContent: 'flex-start',
+        color: '#616161'
+    },
+    arrow: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        color: '#616161'
+    },
+    signoutbtn: {
+        marginLeft: 50,
+        paddingTop: 16,
+        color: '#616161',
+        fontSize: 16
     }
 });

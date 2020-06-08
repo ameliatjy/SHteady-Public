@@ -6,15 +6,11 @@ import {
     StyleSheet,
     View,
     Text,
-    FlatList,
 } from 'react-native';
 
 import MultiSelect from 'react-native-multiple-select';
 import { Button } from 'native-base';
 import { TextInput } from 'react-native-paper';
-import { ScrollView } from 'react-native-gesture-handler';
-  
-let unsubscribe;
 
 export default class EditProfile extends Component {
 
@@ -94,7 +90,6 @@ export default class EditProfile extends Component {
     }
     
     render() {
-        //const curr = this.props.route.params?.currCCAs ?? []
         const { selectedCCAs } = this.state;
         const curr = this.state.initialSelected;
 
@@ -114,21 +109,21 @@ export default class EditProfile extends Component {
         
         return (
             <View style={{ flex: 1, padding: 20, flexDirection: 'column' }}>
-                    <View style={{flexDirection: 'row', margin: 8, justifyContent: 'space-between'}}>
+                    <View style={styles.fieldView}>
                         <Text>Name:</Text>
-                        <TextInput style={{width: 200, height: 30, backgroundColor: 'white'}}
+                        <TextInput style={styles.details}
                         multiline={false}
                         placeholder={this.state.currname} />
                     </View>
-                    <View style={{flexDirection: 'row', margin: 8, justifyContent: 'space-between'}}>
+                    <View style={styles.fieldView}>
                         <Text>Matriculation Number:</Text>
-                        <TextInput style={{width: 200, height: 30, backgroundColor: 'white'}}
+                        <TextInput style={styles.details}
                         multiline={false}
                         placeholder={this.state.matric} />
                     </View>
-                    <View style={{flexDirection: 'row', margin: 8, justifyContent: 'space-between'}}>
+                    <View style={styles.fieldView}>
                         <Text>Room Number:</Text>
-                        <TextInput style={{width: 200, height: 30, backgroundColor: 'white'}}
+                        <TextInput style={styles.details}
                         multiline={false}
                         placeholder={this.state.currroom}
                         onChangeText={updateRoom}/>
@@ -165,7 +160,7 @@ export default class EditProfile extends Component {
                     <Text>
                         {typeof selectedCCAs === 'undefined' ? 'New Edit: ' : 'Updated CCAs: ' + selectedCCAs.join(', ')}
                     </Text>
-                    <Button style={{backgroundColor: '#ffd4b3',marginTop: 20, width: 300, height: 50, justifyContent: 'center', alignSelf: 'center'}}
+                    <Button style={styles.savechangesbtn}
                         onPress={onSave}>
                         <Text>Save Changes</Text>
                     </Button>
@@ -189,5 +184,23 @@ const styles = StyleSheet.create({
         color: 'gray',
         fontSize:16,
         flex: 6
+    },
+    fieldView: {
+        flexDirection: 'row',
+        margin: 8,
+        justifyContent: 'space-between'
+    },
+    details: {
+        width: 200,
+        height: 30,
+        backgroundColor: 'white'
+    },
+    savechangesbtn: {
+        backgroundColor: '#ffd4b3',
+        marginTop: 20,
+        width: 300,
+        height: 50,
+        justifyContent: 'center',
+        alignSelf: 'center'
     }
 });
