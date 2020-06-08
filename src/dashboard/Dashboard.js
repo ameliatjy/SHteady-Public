@@ -23,7 +23,7 @@ export default class DashBoard extends Component {
     }
 
     componentDidMount() {
-        firebase.database().ref('/dashboard').on('value', querySnapShot => {
+        firebase.database().ref('/dashboard').orderByChild('priority').on('value', querySnapShot => {
             let data = querySnapShot.val() ? querySnapShot.val() : {};
             let dashboardItems = {...data};
             this.setState({
@@ -32,8 +32,11 @@ export default class DashBoard extends Component {
         });
     }
 
+    componentWillUnmount() {
+        unsubscribe()
+    }
 
-    oneTimeTaskConfirmation = (currtask, moreInfo) => {
+    oneTimeTaskConfirmation = (currtask, moreInfo, priority) => {
         var user = firebase.auth().currentUser;
 
         var matric = user.displayName
@@ -49,8 +52,10 @@ export default class DashBoard extends Component {
             room: currroom,
             task: currtask,
             addionalInfo: moreInfo,
-            isInProgress: false
+            isInProgress: false,
+            priority: priority,
         })
+
         // delete tasks after a period of time
         // setTimeout(() => {
             
@@ -63,7 +68,7 @@ export default class DashBoard extends Component {
             'Please help me close my windows!!!',
             [
                 {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please close my windows!', ''), style: 'default'},
+                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please close my windows!', '', 1), style: 'default'},
             ]
         );
     }
@@ -73,7 +78,7 @@ export default class DashBoard extends Component {
     }
      
     dabaoHandleConfirm = () => {
-        this.oneTimeTaskConfirmation('Please help me dabao commhall!', 'Food to daobao:\n' + this.state.dabaoText)
+        this.oneTimeTaskConfirmation('Please help me dabao commhall!', 'Food to daobao:\n' + this.state.dabaoText, 3)
         this.setState({ dabaoDialogVisible: false });
     }
      
@@ -92,7 +97,7 @@ export default class DashBoard extends Component {
     }
      
     wakeupHandleConfirm = (datetime) => {
-        this.oneTimeTaskConfirmation('Please wake me up!', moment(datetime).format('llll'))
+        this.oneTimeTaskConfirmation('Please wake me up!', moment(datetime).format('llll'), 4)
         this.hideDatetimePicker();
     }
 
@@ -102,7 +107,7 @@ export default class DashBoard extends Component {
             'Halim coming!!! Help me hide my aircon PLEASE!!!',
             [
                 {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please hide my aircon!', ''), style: 'default'},
+                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please hide my aircon!', '', 2), style: 'default'},
             ]
         );
     }
@@ -112,7 +117,7 @@ export default class DashBoard extends Component {
     }
      
     groceriesHandleConfirm = () => {
-        this.oneTimeTaskConfirmation('Please help me get groceries!', this.state.groceriesText)
+        this.oneTimeTaskConfirmation('Please help me get groceries!', this.state.groceriesText, 5)
         this.setState({ groceriesDialogVisible: false });
     }
      
@@ -127,7 +132,7 @@ export default class DashBoard extends Component {
     }
      
     othersHandleConfirm = () => {
-        this.oneTimeTaskConfirmation('Please help me with something!', this.state.othersText)
+        this.oneTimeTaskConfirmation('Please help me with something!', this.state.othersText, 6)
         this.setState({ othersDialogVisible: false });
     }
      

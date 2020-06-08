@@ -7,7 +7,7 @@ export const logoutUser = () => {
 
 export const signUpUser = async ({ name, matric, email, password, confirmPassword }) => {
     if (name.length <= 0) { return { error: "Name cannot be empty." }
-     } else if (matric.length <= 0) { return { error: "Matric cannot be empty." }
+    } else if (matric.length <= 0) { return { error: "Matric cannot be empty." }
     } else if (email.length <= 0) { return { error: "Email cannot be empty." }
     } else if (password.length <= 0) { return { error: "Password cannot be empty." }
     } else if (password.length < 6) { return { error: "Password cannot be less than 6 characters."}

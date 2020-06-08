@@ -38,7 +38,7 @@ class viewMenu extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <SectionList
-          sections={DATA}
+          sections={data}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => <Item title={item} />}
           renderSectionHeader={({ section: { title } }) => (

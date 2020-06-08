@@ -18,12 +18,12 @@ export default class Announcements extends Component {
     checkAccess = () => {
         var curruser = firebase.auth().currentUser
         var matric = curruser.displayName
-        var curraccess
+        var curraccess = []
         firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
             // curremail = snapshot.val().email;
-            curraccess = snapshot.val().accessToAnnouncements;
+            curraccess = snapshot.val().cca ? snapshot.val().cca : [];
         })
-        return curraccess
+        return curraccess.includes('JCRC')
     }
 
     send = (messages) => {
@@ -156,7 +156,7 @@ export default class Announcements extends Component {
                     renderBubble={this.renderBubble}
                     renderSend={this.renderSend}
                 />
-            // </SafeAreaView>
+            // {/* </SafeAreaView> */}
         );
     }
 }
