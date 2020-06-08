@@ -23,7 +23,8 @@ export const signUpUser = async ({ name, matric, email, password, confirmPasswor
                     email: email,
                     room: 'Enter room number',
                     status: 'yo hmu i am in',
-                    cca: []
+                    cca: [],
+                    profilePicUrl: 'https://firebasestorage.googleapis.com/v0/b/shteady-b81ed.appspot.com/o/defaultsheares.png?alt=media&token=95e0cee4-a5c0-4000-8e9b-2c258f87fe2d'
             })
             user.user.updateProfile({
                 displayName: matric
