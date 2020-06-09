@@ -19,6 +19,8 @@ import { Snackbar } from "react-native-paper";
 
 import * as ImagePicker from 'expo-image-picker';
 
+import { StatusButton } from '../components/statusbutton';
+
 export default class Profile extends Component {
 
     state = {
@@ -182,7 +184,7 @@ export default class Profile extends Component {
                     <TouchableOpacity onPress={this.statusUpdate}>
                         <View style={{ flexDirection: 'row', paddingTop: 30, marginLeft: 50, marginRight: 50 }}>
                             <Text style={styles.statussubpage}>Status</Text>
-                            <Text style={styles.statusdisplay}>{this.state.status}</Text>
+                            <StatusButton type={this.state.status} />
                             <Arrow name="right" size={40} style={styles.arrow} />
                         </View>
                     </TouchableOpacity>
@@ -261,20 +263,22 @@ const styles = StyleSheet.create({
         flex: 5,
         fontSize: 16,
         justifyContent: 'flex-start',
-        color: '#616161'
+        color: '#616161',
+        marginTop: 10
     },
     statusdisplay: {
         flex: 4,
         fontSize: 10,
         textAlign: 'right',
-        marginRight: 10,
+        marginRight: 9,
         color: '#616161'
     },
     communitysubpage: {
         flex: 9,
         fontSize: 16,
         justifyContent: 'flex-start',
-        color: '#616161'
+        color: '#616161',
+        marginTop: 9
     },
     arrow: {
         flex: 1,
@@ -285,6 +289,6 @@ const styles = StyleSheet.create({
         marginLeft: 50,
         paddingTop: 16,
         color: '#616161',
-        fontSize: 16
+        fontSize: 16,
     }
 });

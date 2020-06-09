@@ -129,7 +129,10 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         marginTop: 10,
+        marginLeft: 10,
+        marginRight: 10,
         backgroundColor: '#fff',
+        borderRadius: 10,
         alignItems: 'center',
     },
     text: {
