@@ -23,12 +23,126 @@ export default class Meals extends Component {
         this.props.navigation.navigate('Subpages', { screen: 'Menu', params: { currPage: 'Menu' } });
     }
 
-    donateMeal = () => {
-        this.props.navigation.navigate('Subpages', { screen: 'Donate', params: { currPage: 'Donate' } });
+    confirmdonate = () => {
+        var user = firebase.auth().currentUser;
+
+        var matric = user.displayName
+        var availcredits, donatedmeals
+        firebase.database().ref().on('value', function (snapshot) {
+            donatedmeals = snapshot.val().donatedmeals;
+        })
+        firebase.database().ref('users/' + matric).on('value', function (snapshot) {
+            availcredits = snapshot.val().mealcredit;
+        })
+
+        this.setState({ mealcredit: availcredits - 1 })
+        firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits - 1)
+        firebase.database().ref('donatedmeals').set(donatedmeals + 1);
+
+        Alert.alert(
+            "Successful",
+            "Meal credit donated!",
+            [
+                {
+                    text: "Ok"
+                }
+            ]
+        )
     }
 
-    redeemMeal = () => {
-        this.props.navigation.navigate('Subpages', { screen: 'Redeem', params: { currPage: 'Redeem' } });
+    donateMeal = () => {
+        if (this.state.mealcredit <= 0) {
+            Alert.alert(
+                "Unavailable",
+                "You do not have any available meal credits left to donate.",
+                [
+                    {
+                        text: "Ok"
+                    }
+                ]
+            )
+        } else {
+            Alert.alert(
+                "Donate meal credit",
+                "Click confirm to donate your meal.",
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    },
+                    {
+                        text: "Confirm",
+                        onPress: this.confirmdonate
+                    }
+                ]
+            )
+            //this.props.navigation.navigate('Subpages', { screen: 'Donate', params: { currPage: 'Donate' } });
+        }
+    }
+
+    confirmsecondmeal = () => {
+        var user = firebase.auth().currentUser;
+
+        var matric = user.displayName
+        var availcredits, donatedmeals
+        firebase.database().ref().on('value', function (snapshot) {
+            donatedmeals = snapshot.val().donatedmeals;
+        })
+        firebase.database().ref('users/' + matric).on('value', function (snapshot) {
+            availcredits = snapshot.val().mealcredit;
+        })
+
+        this.setState({ mealcredit: availcredits + 1 })
+        firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits + 1)
+        firebase.database().ref('donatedmeals').set(donatedmeals - 1);
+
+        Alert.alert(
+            "Successful",
+            "You have redeemed a meal from ...!",
+            [
+                {
+                    text: "Ok"
+                }
+            ]
+        )
+    }
+
+    secondMeal = () => {
+        var user = firebase.auth().currentUser;
+
+        var matric = user.displayName
+        var donatedmeals
+        firebase.database().ref('donatedmeals').on('value', function (snapshot) {
+            donatedmeals = snapshot.val();
+        })
+
+        if (donatedmeals <= 0) {
+            Alert.alert(
+                "Unsuccessful",
+                "There are no meals up for redemption.",
+                [
+                    {
+                        text: "Ok"
+                    }
+                ]
+            )
+        } else {
+            Alert.alert(
+                "Extra meal credit",
+                "There are " + donatedmeals + " donated meals. Are you sure you'd like to have a second serving?",
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    },
+                    {
+                        text: "YES",
+                        onPress: this.confirmsecondmeal
+                    }
+                ]
+            )
+        }
+        //this.props.navigation.navigate('Subpages', { screen: 'Redeem', params: { currPage: 'Redeem' } });
     }
 
     updatecredit = () => {
@@ -36,12 +150,12 @@ export default class Meals extends Component {
 
         var matric = user.displayName
         var availcredits
-        firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+        firebase.database().ref('users/' + matric).on('value', function (snapshot) {
             availcredits = snapshot.val().mealcredit;
         })
 
-        this.setState({ mealcredit: availcredits-1 })
-        firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits-1)
+        this.setState({ mealcredit: availcredits - 1 })
+        firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits - 1)
     }
 
     redeemcredit = () => {
@@ -116,10 +230,10 @@ export default class Meals extends Component {
                         style={styles.circlebtns} />
                     <Button title="Donate Your Meal" onPress={this.donateMeal} color='#616161' />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.redeemMeal}>
+                <TouchableOpacity onPress={this.secondMeal}>
                     <Image source={require('../images/secondserving.png')}
                         style={styles.circlebtns} />
-                    <Button title="Second Serving Plz..." onPress={this.redeemMeal} color='#616161' />
+                    <Button title="Second Serving Plz..." onPress={this.secondMeal} color='#616161' />
                 </TouchableOpacity>
             </View>
         );
