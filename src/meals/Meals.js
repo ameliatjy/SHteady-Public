@@ -16,7 +16,7 @@ export default class Meals extends Component {
 
     state = {
         matric: null,
-        mealcredit: 1,
+        mealcredit: null,
     }
 
     viewMenu = () => {
@@ -31,8 +31,21 @@ export default class Meals extends Component {
         this.props.navigation.navigate('Subpages', { screen: 'Redeem', params: { currPage: 'Redeem' } });
     }
 
+    updatecredit = () => {
+        var user = firebase.auth().currentUser;
+
+        var matric = user.displayName
+        var availcredits
+        firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+            availcredits = snapshot.val().mealcredit;
+        })
+
+        this.setState({ mealcredit: availcredits-1 })
+        firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits-1)
+    }
+
     redeemcredit = () => {
-        if (this.state.mealcredit === 0) {
+        if (this.state.mealcredit <= 0) {
             Alert.alert(
                 "Unavailable",
                 "You do not have any available meal credits left.",
@@ -53,11 +66,31 @@ export default class Meals extends Component {
                     },
                     {
                         text: "Confirm",
-                        onPress: () => this.setState({ mealcredit: 0 })
+                        onPress: this.updatecredit
                     }
                 ]
             )
         }
+    }
+
+    getDeets = () => {
+        let self = this;
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                self.setState({ matric: user.displayName })
+                firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
+                    self.setState({ mealcredit: snapshot.val().mealcredit })
+                    while (self.state.matric == null || self.state.mealcredit == null) {
+                        setTimeout(function () { }, 3000);
+                        console.log("getting data, setting timeout");
+                    }
+                })
+            }
+        })
+    }
+
+    componentDidMount() {
+        this.getDeets();
     }
 
     render() {
