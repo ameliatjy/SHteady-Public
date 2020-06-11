@@ -27,17 +27,29 @@ export default class Meals extends Component {
         var user = firebase.auth().currentUser;
 
         var matric = user.displayName
-        var availcredits, donatedmeals
+        var availcredits, donatedmeals, name
         firebase.database().ref().on('value', function (snapshot) {
             donatedmeals = snapshot.val().donatedmeals;
         })
+
         firebase.database().ref('users/' + matric).on('value', function (snapshot) {
             availcredits = snapshot.val().mealcredit;
+            name = snapshot.val().name;
+        })
+
+        var mealsdonatedfrom
+        firebase.database().ref('mealsdonatedfrom').on('value', function (snapshot) {
+                mealsdonatedfrom = [name]
+                snapshot.forEach(function(item) {
+                    var itemVal = item.val();
+                    mealsdonatedfrom.push(itemVal);
+                })
         })
 
         this.setState({ mealcredit: availcredits - 1 })
         firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits - 1)
         firebase.database().ref('donatedmeals').set(donatedmeals + 1);
+        firebase.database().ref('mealsdonatedfrom').set(mealsdonatedfrom);
 
         Alert.alert(
             "Successful",
@@ -84,7 +96,7 @@ export default class Meals extends Component {
         var user = firebase.auth().currentUser;
 
         var matric = user.displayName
-        var availcredits, donatedmeals
+        var availcredits, donatedmeals, mealsdonatedfrom
         firebase.database().ref().on('value', function (snapshot) {
             donatedmeals = snapshot.val().donatedmeals;
         })
@@ -92,13 +104,32 @@ export default class Meals extends Component {
             availcredits = snapshot.val().mealcredit;
         })
 
+        var mealsdonatedfrom
+        firebase.database().ref('mealsdonatedfrom').on('value', function (snapshot) {
+            mealsdonatedfrom = []
+                snapshot.forEach(function(item) {
+                    var itemVal = item.val();
+                    mealsdonatedfrom.push(itemVal);
+                })
+        })
+
+        var newarray, donor;
+        if (mealsdonatedfrom.length === 1) {
+            newarray = 0
+            donor = mealsdonatedfrom.shift();
+        } else {
+            donor = mealsdonatedfrom.shift();
+            newarray = mealsdonatedfrom
+        }
+
         this.setState({ mealcredit: availcredits + 1 })
         firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits + 1)
         firebase.database().ref('donatedmeals').set(donatedmeals - 1);
+        firebase.database().ref('mealsdonatedfrom').set(newarray);
 
         Alert.alert(
             "Successful",
-            "You have redeemed a meal from ...!",
+            "You have redeemed a meal from " + donor + " !",
             [
                 {
                     text: "Ok"
