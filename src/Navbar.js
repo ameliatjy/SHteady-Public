@@ -1,6 +1,9 @@
 //split this file when the time comes :))
 
 import React, { Component } from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Badge } from 'react-native-elements';
+import { StyleSheet, View } from 'react-native';
 
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconMCI from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,13 +15,36 @@ import AnnouncementsStackScreen from './announcements/AnnouncementsStack'
 import ReportStackScreen from './report/ReportStack'
 import ProfileStackScreen from './profile/ProfileStack'
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import firebase from 'firebase/app';
 
 const Tab = createBottomTabNavigator();
 
 export default class Navbar extends Component {
+
+    state = {
+        taskCount: 0,
+    }
+
+    numDashboardTasks() {
+        var count = 0
+        firebase.database().ref('dashboard/').on('value', function(snapshot) {
+            count = snapshot.numChildren()
+        })
+        return count
+    }
+
+    componentDidMount() {
+        setInterval(() => {
+            this.setState({taskCount: this.numDashboardTasks()})
+        }, 3000)
+    }
+
+    componentWillUnmount() {
+        return firebase.database().ref('/dashboard').off()
+    }
+
     render() {
-      return (
+        return (
             <Tab.Navigator
                 initialRouteName='Dashboard'
                 tabBarOptions={{
@@ -32,7 +58,10 @@ export default class Navbar extends Component {
                     options={{ 
                         tabBarLabel: 'Dashboard',
                         tabBarIcon: ({ color }) => (
-                            <IconAnt name={'profile'} size={27} color={color}/>
+                            <View style={styles.badgeCon}>
+                            <IconAnt name={'profile'} size={29} color={color}/>
+                            <Badge value={this.state.taskCount} status={'error'} containerStyle={styles.dashboardBadge}/>
+                            </View>
                         )
                     }}
                 />
@@ -77,7 +106,18 @@ export default class Navbar extends Component {
                     }}
                 />
             </Tab.Navigator>
-      );
+        );
     }
-  }
+}
+
+const styles = StyleSheet.create({
+    dashboardBadge : {
+        position: 'absolute',
+        top: -2,
+        right: -6,
+    },
+    badgeCon : {
+        flexDirection: 'row'
+    }
+})
 

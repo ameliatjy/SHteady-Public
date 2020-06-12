@@ -29,14 +29,6 @@ export const signUpUser = async ({ name, matric, email, password, confirmPasswor
                 displayName: matric
             })
             return user.user
-            // var current = firebase.auth().currentUser;
-            // current.updateProfile({
-            //     displayName: matric,
-            // })
-            // console.log(current.displayName)
-            // // console.log(user);
-            // return current;
-            // loginUser(user); // Optional
         }, function (error) {
             console.log(error);
             switch (error.code) {

@@ -23,9 +23,11 @@ export default class DashBoard extends Component {
     }
 
     componentDidMount() {
-        firebase.database().ref('/dashboard').orderByChild('priority').on('value', querySnapShot => {
+        firebase.database().ref('/dashboard').orderByPriority().on('value', querySnapShot => {
             let data = querySnapShot.val() ? querySnapShot.val() : {};
+            // console.log(Object.keys(querySnapShot.val()))
             let dashboardItems = {...data};
+            // console.log(dashboardItems)
             this.setState({
                 dashboard: dashboardItems,
             });
@@ -33,28 +35,29 @@ export default class DashBoard extends Component {
     }
 
     componentWillUnmount() {
-        unsubscribe()
+        return firebase.database().ref('/dashboard').off()
     }
 
     oneTimeTaskConfirmation = (currtask, moreInfo, priority) => {
         var user = firebase.auth().currentUser;
 
         var matric = user.displayName
-        var currroom, currname
+        var currroom, currname, block
         firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
             currroom = snapshot.val().room;
             currname = snapshot.val().name;
+            block = currroom.substring(0, 1);
         })
 
         var newRequest = firebase.database().ref('dashboard/').push();
-        newRequest.set({
+        newRequest.setWithPriority({
             name: currname,
             room: currroom,
             task: currtask,
             addionalInfo: moreInfo,
             isInProgress: false,
-            priority: priority,
-        })
+            block: block,
+        }, priority)
 
         // delete tasks after a period of time
         // setTimeout(() => {
@@ -193,7 +196,7 @@ export default class DashBoard extends Component {
 
         return(
             <View style={styles.container}>
-                {/* <View style={{flex: 0.5, justifyContent: 'space-between' }}> */}
+            <ScrollView>
                 <View style={styles.iconCon}>
 
                     <TouchableOpacity style={styles.individualIcon} onPress={() => this.closeMyWindowsButton()}>
@@ -288,7 +291,8 @@ export default class DashBoard extends Component {
                 <View style={styles.taskCon}>
                     <Text style={styles.title}>Current Help Needed!!</Text>
                     {dashboardKeys.length > 0 ? (
-                        <ScrollView>
+                        <View>
+                        {/* <ScrollView> */}
                         {
                             dashboardKeys.map((key) => (
                                 <View key = {key}  style = {styles.item}>
@@ -304,16 +308,18 @@ export default class DashBoard extends Component {
                                 </View>
                             ))
                         }
-                        </ScrollView>
+                        {/* </ScrollView> */}
+                        </View>
                     ) : (
-                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <View style={styles.empty}>
                             <Text style={{fontSize: 18}}>No one needs your help for now!</Text>
                             <Text style={{fontSize: 18}}>Thank you! :)</Text>
                         </View>
                     )}
                 </View>
-                
+            </ScrollView> 
             </View>
+            
         )
     }
 }
@@ -338,8 +344,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     iconPic : {
-        width: 110, 
-        height: 110,
+        width: 105, 
+        height: 105,
     },
     iconText : {
         fontSize: 14,
@@ -358,6 +364,10 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         fontWeight: '500',
         color: '#ff7d1d',
+    },
+    empty : {
+        alignItems: 'center', 
+        paddingTop: 100
     },
     item: {
         justifyContent: 'space-between',

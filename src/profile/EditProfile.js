@@ -17,6 +17,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 let unsubscribe;
 
 export default class EditProfile extends Component {
+
     state = {
         initialSelected: [],
         selectedItems: [],
@@ -62,22 +63,25 @@ export default class EditProfile extends Component {
         this.setState({ selectedCCAs });
     }
 
-    componentDidMount() {
+    getDeets = () => {
         let self = this;
-        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+        firebase.auth().onAuthStateChanged(function (user) {
             console.log('EditProfile chunk')
             if (user) {
                 console.log('user is signed in!')
                 console.log('user:', user)
                 self.setState({ matric: user.displayName })
-                firebase.database().ref('users/').child(user.displayName).on('value', async function(snapshot) {
-                    await self.setState({ currname: snapshot.val().name })
-                    await self.setState({ curremail: snapshot.val().email }) 
-                    await self.setState({ currroom: snapshot.val().room })
-                    var grps = await snapshot.val().cca
+                firebase.database().ref('users/').child(user.displayName).on('value', function(snapshot) {
+                    self.setState({ currname: snapshot.val().name })
+                    self.setState({ curremail: snapshot.val().email }) 
+                    self.setState({ currroom: snapshot.val().room })
+                    var grps = snapshot.val().cca
                     typeof grps === 'undefined'
-                    ? await self.setState({ initialSelected: [] })
-                    : await self.setState({ initialSelected: snapshot.val().cca })
+                    ? self.setState({ initialSelected: [] })
+                    : self.setState({ initialSelected: snapshot.val().cca })
+                    while (self.state.matric == null || self.state.curremail == null || self.state.currname == null || self.state.currroom == null) {
+                        setTimeout(function() {}, 3000);
+                    }
                 })
             } else {
                 console.log('user not signed in')
@@ -85,8 +89,8 @@ export default class EditProfile extends Component {
         })
     }
 
-    componentWillUnmount() {
-        unsubscribe()
+    componentDidMount() {
+        this.getDeets();
     }
     
     render() {
@@ -105,7 +109,7 @@ export default class EditProfile extends Component {
             typeof selectedCCAs === 'undefined'
             ? await firebase.database().ref('users/' + this.state.matric).child('cca').set([])
             : await firebase.database().ref('users/' + this.state.matric).child('cca').set(selectedCCAs);
-            this.props.navigation.navigate('Profile', { currCCAs: selectedCCAs, matric: this.state.matric });
+            this.props.navigation.navigate('Profile');
         }
         
         return (

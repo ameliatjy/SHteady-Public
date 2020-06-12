@@ -12,37 +12,72 @@ import {
 
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import { ThemeProvider } from 'react-native-paper';
+
+let unsubscribe;
 
 export default class Status extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            avail: ''};
+    state = {
+        matric: null,
+        avail: null
     }
 
-    updatedStatus = () => {
-        Alert.alert(
-            'Status Update',
-            'Your status has been successfully updated!',
-            [
-                {
-                    text: 'Nice!',
-                    onPress: () => {
-                        this.props.navigation.navigate('Profile', {currStatus: this.state.avail});}
-                },
-            ],
-            {cancelable: false}
-        );
-        Keyboard.dismiss();
+    getDeets = () => {
+        let self = this;
+        firebase.auth().onAuthStateChanged(function (user) {
+            console.log('status chunk')
+            if (user) {
+                self.setState({ matric: user.displayName })
+                firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
+                    self.setState({ avail: snapshot.val().status })
+                    while (self.state.matric == null || self.state.avail == null) {
+                        setTimeout(function() {}, 3000);
+                    }
+                })
+            } else {
+                console.log('user not signed in')
+            }
+        })
     }
 
-    matric = this.props.route.params?.matric ?? 'no matric'
-    updateDatabase = (stat) => {
-        firebase.database().ref('users/' + this.matric).child('status').set(stat)
+    componentDidMount() {
+        this.getDeets();
     }
 
     render() {
+
+        console.log("status pg matric", this.state.matric);
+
+        const updateDatabase = (newStatus) => {
+            console.log("updatedatabase method called");
+            firebase.database().ref('users/' + this.state.matric).child('status').set(newStatus);
+        }
+
+        const updatedStatus = () => {
+            Alert.alert(
+                'Status Update',
+                'Your status has been successfully updated!',
+                [
+                    {
+                        text: 'Nice!',
+                        onPress: () => {
+                            updateDatabase(this.state.avail);
+                            this.props.navigation.navigate('Profile');
+                        }
+                    },
+                ],
+                {cancelable: false}
+            );
+            Keyboard.dismiss();
+        }
+
+        const optionsOnPress = (newStatus) => {
+            console.log("newStatus", newStatus);
+            this.state.avail = newStatus;
+            updateDatabase(newStatus);
+            this.props.navigation.navigate('Profile');
+        }
 
         const options = {
             availability: [
@@ -66,13 +101,9 @@ export default class Status extends Component {
                 {
                     options.availability.map((item, index) => (
                         <TouchableOpacity
-                            key = {item.id}
+                            key = {item.avail}
                             style = {styles.container}
-                            // onPress = {this.updateDatabase}
-                            // onPress = {() => this.props.navigation.navigate('Profile', { matric: this.matric })}>
-                            onPress = {item => this.setState(item.avail)}
-                            onPress = {() => this.updateDatabase(item.avail)}
-                            onPress = {() => this.props.navigation.navigate('Profile', { currStatus: item.avail })}>
+                            onPress = {() => optionsOnPress(item.avail)}>
                                 <Text style={styles.text}>
                                     {item.avail}
                                 </Text>
@@ -83,10 +114,8 @@ export default class Status extends Component {
                         style={{height:58, marginTop: 10, backgroundColor: 'white'}}
                         multiline={true}
                         placeholder="Customise your status here!"
-                        // onChangeText={this.updateDatabase}
-                        // onSubmitEditing={() => this.props.navigation.navigate('Profile', { matric: this.matric })}/>
                         onChangeText={newStatus => {this.state.avail = newStatus}}
-                        onSubmitEditing={this.updatedStatus}/>
+                        onSubmitEditing={updatedStatus}/>
             </View>
         );
     }

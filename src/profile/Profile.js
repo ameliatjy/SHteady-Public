@@ -17,8 +17,6 @@ import Arrow from 'react-native-vector-icons/AntDesign';
 import { ErrorMsg } from '../components/errormsg';
 import { Snackbar } from "react-native-paper";
 
-let unsubscribe;
-
 export default class Profile extends Component {
 
     state = {
@@ -26,13 +24,13 @@ export default class Profile extends Component {
         currname: null,
         curremail: null,
         currroom: null,
+        status: null,
         msgVisible: false
     };
 
     statusUpdate = () => {
         this.props.navigation.navigate('Subpages', {
-            screen: 'Status',
-            params: { currStatus: 'yo hmu i am in' },
+            screen: 'Status'
         });
     }
 
@@ -58,19 +56,24 @@ export default class Profile extends Component {
         );
     }
 
-    componentDidMount() {
+    getDeets = () => {
         let self = this;
-        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+        firebase.auth().onAuthStateChanged(function (user) {
             console.log('Profile chunk')
             if (user) {
                 self.setState({ matric: user.displayName })
-                firebase.database().ref('users/').child(user.displayName).on('value', async function (snapshot) {
-                    await self.setState({ currname: snapshot.val().name })
-                    await self.setState({ curremail: snapshot.val().email })
-                    await self.setState({ currroom: snapshot.val().room })
+                firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
+                    self.setState({ currname: snapshot.val().name })
+                    self.setState({ curremail: snapshot.val().email })
+                    self.setState({ currroom: snapshot.val().room })
+                    self.setState({ status: snapshot.val().status })
                     snapshot.val().room === 'Enter room number'
-                        ? await self.setState({ msgVisible: true })
-                        : await self.setState({ msgVisible: false })
+                        ? self.setState({ msgVisible: true })
+                        : self.setState({ msgVisible: false })
+                    while (self.state.matric == null || self.state.curremail == null || self.state.currname == null || self.state.currroom == null || self.state.status == null) {
+                        setTimeout(function() {}, 3000);
+                        console.log("getting data, setting timeout");
+                    }
                 })
             } else {
                 console.log('user not signed in')
@@ -78,18 +81,15 @@ export default class Profile extends Component {
         })
     }
 
-    componentWillUnmount() {
-        unsubscribe()
+    componentDidMount() {
+        this.getDeets();
     }
 
     render() {
-        const newStatus = this.props.route.params?.currStatus ?? 'yo hmu i am in'
-        const ccas = this.props.route.params?.currCCAs ?? []
 
         const editProfile = () => {
             this.props.navigation.navigate('Subpages', {
-                screen: 'EditProfile',
-                params: { currCCAs: ccas, matric: this.state.matric },
+                screen: 'EditProfile'
             });
         }
 
@@ -112,7 +112,7 @@ export default class Profile extends Component {
                                 <TouchableOpacity onPress={this.statusUpdate}>
                                     <View style={{ flexDirection: 'row', paddingTop: 30, marginLeft: 50, marginRight: 50 }}>
                                         <Text style={{ flex: 5, fontSize: 16, justifyContent: 'flex-start', color: '#616161' }}>Status</Text>
-                                        <Text style={{ flex: 4, fontSize: 10, textAlign: 'right', marginRight: 10, color: '#616161' }}>{newStatus}</Text>
+                                        <Text style={{ flex: 4, fontSize: 10, textAlign: 'right', marginRight: 10, color: '#616161' }}>{this.state.status}</Text>
                                         <Arrow name="right" size={40} style={{ flex: 1, justifyContent: 'flex-end', color: '#616161' }} />
                                     </View>
                                 </TouchableOpacity>
