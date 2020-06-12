@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native';
 
 import Logo from '../components/Logo';
 
@@ -47,7 +47,7 @@ const Signup = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Logo />
-            <View style={styles.formCon}>
+            <KeyboardAvoidingView style={styles.formCon} behavior="padding">
                 <View style={styles.inputBox}>
                     <TextInput style={styles.inputBoxText}
                         placeholder='Full Name'
@@ -92,7 +92,7 @@ const Signup = ({ navigation }) => {
                     onSignUpPressed}>
                     <Text style={styles.buttonText}>Signup</Text>
                 </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
             <View style={styles.signupTextCont}>
                 <Text style={styles.signupText}>Already have an account?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('SignedOut', {screen: 'Login'})}>
