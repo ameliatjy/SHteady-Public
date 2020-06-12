@@ -12,6 +12,8 @@ import MultiSelect from 'react-native-multiple-select';
 import { Button } from 'native-base';
 import { TextInput } from 'react-native-paper';
 
+let unsubscribe;
+
 export default class EditProfile extends Component {
 
     state = {
@@ -61,22 +63,22 @@ export default class EditProfile extends Component {
 
     getDeets = () => {
         let self = this;
-        firebase.auth().onAuthStateChanged(function (user) {
+        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             console.log('EditProfile chunk')
             if (user) {
                 console.log('user is signed in!')
                 console.log('user:', user)
                 self.setState({ matric: user.displayName })
-                firebase.database().ref('users/').child(user.displayName).on('value', function(snapshot) {
+                firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
                     self.setState({ currname: snapshot.val().name })
-                    self.setState({ curremail: snapshot.val().email }) 
+                    self.setState({ curremail: snapshot.val().email })
                     self.setState({ currroom: snapshot.val().room })
                     var grps = snapshot.val().cca
-                    typeof grps === 'undefined'
-                    ? self.setState({ initialSelected: [] })
-                    : self.setState({ initialSelected: snapshot.val().cca })
+                    grps === 'none'
+                        ? self.setState({ initialSelected: [] })
+                        : self.setState({ initialSelected: snapshot.val().cca })
                     while (self.state.matric == null || self.state.curremail == null || self.state.currname == null || self.state.currroom == null) {
-                        setTimeout(function() {}, 3000);
+                        setTimeout(function () { }, 3000);
                     }
                 })
             } else {
@@ -88,7 +90,11 @@ export default class EditProfile extends Component {
     componentDidMount() {
         this.getDeets();
     }
-    
+
+    componentWillUnmount() {
+        unsubscribe()
+    }
+
     render() {
         const { selectedCCAs } = this.state;
         const curr = this.state.initialSelected;
@@ -97,73 +103,73 @@ export default class EditProfile extends Component {
 
         const updateRoom = async (text) => {
             this.state.currroom = text,
-            await firebase.database().ref('users/' + this.state.matric).child('room').set(this.state.currroom)
+                await firebase.database().ref('users/' + this.state.matric).child('room').set(this.state.currroom)
         }
 
         const onSave = async () => {
             typeof selectedCCAs === 'undefined'
-            ? await firebase.database().ref('users/' + this.state.matric).child('cca').set([])
-            : await firebase.database().ref('users/' + this.state.matric).child('cca').set(selectedCCAs);
+                ? await firebase.database().ref('users/' + this.state.matric).child('cca').set('none')
+                : await firebase.database().ref('users/' + this.state.matric).child('cca').set(selectedCCAs);
             this.props.navigation.navigate('Profile');
         }
-        
+
         return (
             <View style={{ flex: 1, padding: 20, flexDirection: 'column' }}>
-                    <View style={styles.fieldView}>
-                        <Text>Name:</Text>
-                        <TextInput style={styles.details}
+                <View style={styles.fieldView}>
+                    <Text>Name:</Text>
+                    <TextInput style={styles.details}
                         multiline={false}
                         placeholder={this.state.currname} />
-                    </View>
-                    <View style={styles.fieldView}>
-                        <Text>Matriculation Number:</Text>
-                        <TextInput style={styles.details}
+                </View>
+                <View style={styles.fieldView}>
+                    <Text>Matriculation Number:</Text>
+                    <TextInput style={styles.details}
                         multiline={false}
                         placeholder={this.state.matric} />
-                    </View>
-                    <View style={styles.fieldView}>
-                        <Text>Room Number:</Text>
-                        <TextInput style={styles.details}
+                </View>
+                <View style={styles.fieldView}>
+                    <Text>Room Number:</Text>
+                    <TextInput style={styles.details}
                         multiline={false}
                         placeholder={this.state.currroom}
-                        onChangeText={updateRoom}/>
-                    </View>
-                    <View style={{flexDirection: 'row', margin: 8}}>
-                        <Text style={{flex:5}}>Email:</Text>
-                        <Text style={styles.noEditText}>{this.state.curremail}</Text>
-                    </View>
-                    <MultiSelect
-                        hideTags
-                        items={this.things}
-                        uniqueKey='id'
-                        ref={(component) => { this.multiSelect = component }}
-                        onSelectedItemsChange={this.onSelectedItems}
-                        selectedItems={selectedCCAs}
-                        selectText="Select Your CCAs"
-                        searchInputPlaceholderText="Search CCAs..."
-                        onChangeInput={(text) => console.log(text)}
-                        tagRemoveIconColor="#CCC"
-                        tagBorderColor="#CCC"
-                        tagTextColor="#CCC"
-                        selectedItemTextColor="#ffd4b3"
-                        selectedItemIconColor="#ffd4b3"
-                        itemTextColor="#000"
-                        displayKey='name'
-                        searchInputStyle={{ color: '#CCC' }}
-                        submitButtonColor="#CCC"
-                        submitButtonText="Selection Complete"
-                        styleItemsContainer={{maxHeight: 150}}
-                    />
-                    <Text>
-                        {typeof this.state.initialSelected === 'undefined' ? 'None selected yet.' : 'Current CCAs Logged In: ' + this.state.initialSelected.join(', ')}
-                    </Text>
-                    <Text>
-                        {typeof selectedCCAs === 'undefined' ? 'New Edit: ' : 'Updated CCAs: ' + selectedCCAs.join(', ')}
-                    </Text>
-                    <Button style={styles.savechangesbtn}
-                        onPress={onSave}>
-                        <Text>Save Changes</Text>
-                    </Button>
+                        onChangeText={updateRoom} />
+                </View>
+                <View style={{ flexDirection: 'row', margin: 8 }}>
+                    <Text style={{ flex: 5 }}>Email:</Text>
+                    <Text style={styles.noEditText}>{this.state.curremail}</Text>
+                </View>
+                <MultiSelect
+                    hideTags
+                    items={this.things}
+                    uniqueKey='id'
+                    ref={(component) => { this.multiSelect = component }}
+                    onSelectedItemsChange={this.onSelectedItems}
+                    selectedItems={selectedCCAs}
+                    selectText="Select Your CCAs"
+                    searchInputPlaceholderText="Search CCAs..."
+                    onChangeInput={(text) => console.log(text)}
+                    tagRemoveIconColor="#CCC"
+                    tagBorderColor="#CCC"
+                    tagTextColor="#CCC"
+                    selectedItemTextColor="#ffd4b3"
+                    selectedItemIconColor="#ffd4b3"
+                    itemTextColor="#000"
+                    displayKey='name'
+                    searchInputStyle={{ color: '#CCC' }}
+                    submitButtonColor="#CCC"
+                    submitButtonText="Selection Complete"
+                    styleItemsContainer={{ maxHeight: 150 }}
+                />
+                <Text>
+                    {typeof this.state.initialSelected === 'undefined' ? 'None selected yet.' : 'Current CCAs Logged In: ' + this.state.initialSelected.join(', ')}
+                </Text>
+                <Text>
+                    {typeof selectedCCAs === 'undefined' ? 'New Edit: ' : 'Updated CCAs: ' + selectedCCAs.join(', ')}
+                </Text>
+                <Button style={styles.savechangesbtn}
+                    onPress={onSave}>
+                    <Text>Save Changes</Text>
+                </Button>
             </View>
         );
     }
@@ -178,11 +184,11 @@ const styles = StyleSheet.create({
     },
     noEditText: {
         backgroundColor: 'white',
-        borderLeftWidth:13,
-        borderTopWidth:4,
-        borderBottomWidth:4,
+        borderLeftWidth: 13,
+        borderTopWidth: 4,
+        borderBottomWidth: 4,
         color: 'gray',
-        fontSize:16,
+        fontSize: 16,
         flex: 6
     },
     fieldView: {

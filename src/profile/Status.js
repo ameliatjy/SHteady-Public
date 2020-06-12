@@ -26,7 +26,7 @@ export default class Status extends Component {
 
     getDeets = () => {
         let self = this;
-        firebase.auth().onAuthStateChanged(function (user) {
+        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             console.log('status chunk')
             if (user) {
                 self.setState({ matric: user.displayName })
@@ -44,6 +44,10 @@ export default class Status extends Component {
 
     componentDidMount() {
         this.getDeets();
+    }
+    
+    componentWillUnmount() {
+        unsubscribe()
     }
 
     render() {

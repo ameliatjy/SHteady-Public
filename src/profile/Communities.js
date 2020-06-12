@@ -14,6 +14,8 @@ import 'firebase/auth';
 
 import Accordion from 'react-native-collapsible/Accordion';
 
+let unsubscribe;
+
 export default class Communities extends Component {
 
     state = {
@@ -27,7 +29,7 @@ export default class Communities extends Component {
 
     getDeets = () => {
         let self = this;
-        firebase.auth().onAuthStateChanged(function (user) {
+        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             console.log('Communities chunk')
             if (user) {
                 self.setState({ matric: user.displayName })
@@ -48,6 +50,10 @@ export default class Communities extends Component {
 
     componentDidMount() {
         this.getDeets();
+    }
+
+    componentWillUnmount() {
+        unsubscribe()
     }
 
     _renderSectionTitle = section => {

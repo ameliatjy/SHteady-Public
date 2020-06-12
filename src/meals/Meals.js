@@ -12,6 +12,8 @@ import {
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
+let unsubscribe;
+
 export default class Meals extends Component {
 
     state = {
@@ -31,6 +33,9 @@ export default class Meals extends Component {
         firebase.database().ref().on('value', function (snapshot) {
             donatedmeals = snapshot.val().donatedmeals;
         })
+        while (donatedmeals === null) {
+            setTimeout(function() {}, 3000)
+        }
 
         firebase.database().ref('users/' + matric).on('value', function (snapshot) {
             availcredits = snapshot.val().mealcredit;
@@ -220,7 +225,7 @@ export default class Meals extends Component {
 
     getDeets = () => {
         let self = this;
-        firebase.auth().onAuthStateChanged(function (user) {
+        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 self.setState({ matric: user.displayName })
                 firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
@@ -236,6 +241,10 @@ export default class Meals extends Component {
 
     componentDidMount() {
         this.getDeets();
+    }
+
+    componentWillUnmount() {
+        unsubscribe()
     }
 
     render() {

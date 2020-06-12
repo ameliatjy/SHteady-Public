@@ -21,6 +21,8 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { StatusButton } from '../components/statusbutton';
 
+let unsubscribe;
+
 export default class Profile extends Component {
 
     state = {
@@ -37,11 +39,11 @@ export default class Profile extends Component {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
 
-            xhr.onload = function() {
+            xhr.onload = function () {
                 resolve(xhr.response);
             };
 
-            xhr.onerror = function() {
+            xhr.onerror = function () {
                 reject(new Error('uriToBlob failed'));
             };
 
@@ -80,7 +82,7 @@ export default class Profile extends Component {
                 mediaTypes: "Images"
             }).then((result) => {
                 if (!result.cancelled) {
-                    const {height, width, type, uri} = result;
+                    const { height, width, type, uri } = result;
                     this.setState({ avatarUrl: uri })
                     firebase.database().ref('users/' + this.state.matric).child('profilePicUrl').set(uri);
                     return this.uriToBlob(uri)
@@ -125,7 +127,7 @@ export default class Profile extends Component {
 
     getDeets = () => {
         let self = this;
-        firebase.auth().onAuthStateChanged(function (user) {
+        unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             console.log('Profile chunk')
             if (user) {
                 self.setState({ matric: user.displayName })
@@ -134,12 +136,16 @@ export default class Profile extends Component {
                     self.setState({ curremail: snapshot.val().email })
                     self.setState({ currroom: snapshot.val().room })
                     self.setState({ status: snapshot.val().status })
-                    self.setState({ avatarUrl: snapshot.val().profilePicUrl })
+                    snapshot.val().profilePicUrl === 'default'
+                        ? self.setState({ avatarUrl: 'https://firebasestorage.googleapis.com/v0/b/shteady-b81ed.appspot.com/o/defaultsheares.png?alt=media&token=95e0cee4-a5c0-4000-8e9b-2c258f87fe2d' })
+                        : self.setState({ avatarUrl: snapshot.val().profilePicUrl })
                     console.log("inner avatar link:", snapshot.val().profilePicUrl);
                     snapshot.val().room === 'Enter room number'
                         ? self.setState({ msgVisible: true })
                         : self.setState({ msgVisible: false })
-                    while (self.state.matric == null || self.state.curremail == null || self.state.currname == null || self.state.currroom == null || self.state.status == null) {
+                    while (self.state.matric == null || self.state.curremail == null ||
+                        self.state.currname == null || self.state.currroom == null ||
+                        self.state.status == null) {
                         setTimeout(function () { }, 3000);
                         console.log("getting data, setting timeout");
                     }
@@ -155,66 +161,70 @@ export default class Profile extends Component {
         this.getDeets();
     }
 
+    componentWillUnmount() {
+        unsubscribe()
+    }
+
     render() {
 
-        console.log("avatarurl:", this.state.avatarUrl); 
+            console.log("avatarurl:", this.state.avatarUrl);
 
-        const editProfile = () => {
-            this.props.navigation.navigate('Subpages', {
-                screen: 'EditProfile'
-            });
-        }
+            const editProfile = () => {
+                this.props.navigation.navigate('Subpages', {
+                    screen: 'EditProfile'
+                });
+            }
 
-        return (
-            <View style={{ flexDirection: 'row' }}>
-                <View style={{ flex: 1, paddingTop: 30 }}>
-                    <TouchableOpacity onPress={this.handleOnPress}>
-                        <Image style={styles.profilepic} source={{ uri: this.state.avatarUrl }} />
-                    </TouchableOpacity>
-                    <Text style={styles.name}>{this.state.currname}</Text>
-                    <Text style={styles.details}>{this.state.currroom} | {this.state.matric}</Text>
-                    <TouchableOpacity>
-                        <Button bordered dark
-                            style={styles.editprofilebtn}
-                            onPress={editProfile}>
-                            <Text style={{ fontSize: 12, color: '#616161' }}>Edit Profile</Text>
-                        </Button>
-                    </TouchableOpacity>
+        return(
+            <View style = {{ flexDirection: 'row' }} >
+        <View style={{ flex: 1, paddingTop: 30 }}>
+            <TouchableOpacity onPress={this.handleOnPress}>
+                <Image style={styles.profilepic} source={{ uri: this.state.avatarUrl }} />
+            </TouchableOpacity>
+            <Text style={styles.name}>{this.state.currname}</Text>
+            <Text style={styles.details}>{this.state.currroom} | {this.state.matric}</Text>
+            <TouchableOpacity>
+                <Button bordered dark
+                    style={styles.editprofilebtn}
+                    onPress={editProfile}>
+                    <Text style={{ fontSize: 12, color: '#616161' }}>Edit Profile</Text>
+                </Button>
+            </TouchableOpacity>
 
-                    <TouchableOpacity onPress={this.statusUpdate}>
-                        <View style={{ flexDirection: 'row', paddingTop: 30, marginLeft: 50, marginRight: 50 }}>
-                            <Text style={styles.statussubpage}>Status</Text>
-                            <StatusButton type={this.state.status} />
-                            <Arrow name="right" size={40} style={styles.arrow} />
-                        </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={this.viewCommunities}>
-                        <View style={styles.orangeline}></View>
-                        <View style={{ flexDirection: 'row', paddingTop: 8, marginLeft: 50, marginRight: 50 }}>
-                            <Text style={styles.communitysubpage}>Communities</Text>
-                            <Arrow name="right" size={40} style={styles.arrow} />
-                        </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={this.signOut}>
-                        <View style={styles.orangeline}></View>
-                        <Text style={styles.signoutbtn}>Sign Out</Text>
-                    </TouchableOpacity>
+            <TouchableOpacity onPress={this.statusUpdate}>
+                <View style={{ flexDirection: 'row', paddingTop: 30, marginLeft: 50, marginRight: 50 }}>
+                    <Text style={styles.statussubpage}>Status</Text>
+                    <StatusButton type={this.state.status} />
+                    <Arrow name="right" size={40} style={styles.arrow} />
                 </View>
-                <Snackbar
-                    visible={this.state.msgVisible}
-                    duration={Snackbar.DURATION_LONG}
-                    onDismiss={() => this.setState({ msgVisible: false })}
-                    style={{ backgroundColor: '#f13a59', position: 'absolute' }}
-                    action={{
-                        label: 'Ok',
-                        onPress: editProfile
-                    }}
-                >
-                    <Text style={{ fontSize: 15 }}>Please edit profile</Text>
-                </Snackbar>
-            </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.viewCommunities}>
+                <View style={styles.orangeline}></View>
+                <View style={{ flexDirection: 'row', paddingTop: 8, marginLeft: 50, marginRight: 50 }}>
+                    <Text style={styles.communitysubpage}>Communities</Text>
+                    <Arrow name="right" size={40} style={styles.arrow} />
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.signOut}>
+                <View style={styles.orangeline}></View>
+                <Text style={styles.signoutbtn}>Sign Out</Text>
+            </TouchableOpacity>
+        </View>
+        <Snackbar
+            visible={this.state.msgVisible}
+            duration={Snackbar.DURATION_LONG}
+            onDismiss={() => this.setState({ msgVisible: false })}
+            style={{ backgroundColor: '#f13a59', position: 'absolute' }}
+            action={{
+                label: 'Ok',
+                onPress: editProfile
+            }}
+        >
+            <Text style={{ fontSize: 15 }}>Please edit profile</Text>
+        </Snackbar>
+            </View >
 
         )
     }

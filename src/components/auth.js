@@ -16,15 +16,15 @@ export const signUpUser = async ({ name, matric, email, password, confirmPasswor
     } else {
         return firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(function (user) {
-                console.log('matric:', matric)
+                console.log('signup page matric:', matric)
                 firebase.database().ref('users/' + matric).set({
                     name: name,
                     matric: matric,
                     email: email,
                     room: 'Enter room number',
                     status: 'yo hmu i am in',
-                    cca: [],
-                    profilePicUrl: 'https://firebasestorage.googleapis.com/v0/b/shteady-b81ed.appspot.com/o/defaultsheares.png?alt=media&token=95e0cee4-a5c0-4000-8e9b-2c258f87fe2d',
+                    cca: 'none',
+                    profilePicUrl: 'default',
                     mealcredit: 1
             })
             user.user.updateProfile({
