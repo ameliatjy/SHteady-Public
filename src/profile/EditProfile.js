@@ -21,7 +21,6 @@ export default class EditProfile extends Component {
         selectedItems: [],
         matric: null,
         currname: null,
-        curremail: null,
         currroom: null
     };
 
@@ -71,13 +70,12 @@ export default class EditProfile extends Component {
                 self.setState({ matric: user.displayName })
                 firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
                     self.setState({ currname: snapshot.val().name })
-                    self.setState({ curremail: snapshot.val().email })
                     self.setState({ currroom: snapshot.val().room })
                     var grps = snapshot.val().cca
                     grps === 'none'
                         ? self.setState({ initialSelected: [] })
                         : self.setState({ initialSelected: snapshot.val().cca })
-                    while (self.state.matric == null || self.state.curremail == null || self.state.currname == null || self.state.currroom == null) {
+                    while (self.state.matric == null || self.state.currname == null || self.state.currroom == null) {
                         setTimeout(function () { }, 3000);
                     }
                 })
@@ -133,10 +131,6 @@ export default class EditProfile extends Component {
                         multiline={false}
                         placeholder={this.state.currroom}
                         onChangeText={updateRoom} />
-                </View>
-                <View style={{ flexDirection: 'row', margin: 8 }}>
-                    <Text style={{ flex: 5 }}>Email:</Text>
-                    <Text style={styles.noEditText}>{this.state.curremail}</Text>
                 </View>
                 <MultiSelect
                     hideTags

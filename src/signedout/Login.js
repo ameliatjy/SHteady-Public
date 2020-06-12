@@ -11,7 +11,6 @@ import 'firebase/auth';
 
 const Login = ({ navigation }) => {
     const [matric, setMatric] = useState({ value: "", error: "" });
-    const [email, setEmail] = useState({ value: "", error: "" });
     const [password, setPassword] = useState({ value: "", error: "" });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -23,7 +22,7 @@ const Login = ({ navigation }) => {
 
         const response = await loginUser({
             matric: matric.value,
-            email: email.value,
+            email: matric.value + '@u.nus.edu',
             password: password.value
         });
 
@@ -54,13 +53,6 @@ const Login = ({ navigation }) => {
                         placeholder='Matric Number'
                         placeholderTextColor='#000000'
                         onChangeText={text => setMatric({ value: text, error: '' })} />
-                </View>
-                <View style={styles.inputBox}>
-                    <TextInput style={styles.inputBoxText}
-                        placeholder='Email Address'
-                        placeholderTextColor='#000000'
-                        keyboardType='email-address'
-                        onChangeText={text => setEmail({ value: text, error: '' })} />
                 </View>
                 <View style={styles.inputBox}>
                     <TextInput style={styles.inputBoxText}

@@ -20,7 +20,6 @@ export const signUpUser = async ({ name, matric, email, password, confirmPasswor
                 firebase.database().ref('users/' + matric).set({
                     name: name,
                     matric: matric,
-                    email: email,
                     room: 'Enter room number',
                     status: 'yo hmu i am in',
                     cca: 'none',

@@ -15,7 +15,6 @@ import 'firebase/auth';
 const Signup = ({ navigation }) => {
     const [name, setName] = useState({ value: "", error: "" });
     const [matric, setMatric] = useState({ value: "", error: "" });
-    const [email, setEmail] = useState({ value: "", error: "" });
     const [password, setPassword] = useState({ value: "", error: "" });
     const [confirmPassword, setConfirmPassword] = useState({ value: "", error: " " })
     const [loading, setLoading] = useState(false);
@@ -30,7 +29,7 @@ const Signup = ({ navigation }) => {
         const response = await signUpUser({
             name: name.value,
             matric: matric.value,
-            email: email.value,
+            email: matric.value + '@u.nus.edu',
             password: password.value,
             confirmPassword: confirmPassword.value
         });
@@ -39,24 +38,7 @@ const Signup = ({ navigation }) => {
             setError(response.error);
         } else {
             setSuccess(true);
-            //navigation.goBack();
             setTimeout(() => navigation.navigate('SignedOut', {screen: 'Login'}), 1500)
-            // Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
-            // .then(() => navigation.navigate('Profile'));
-
-            // Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
-            // .then(() => navigation.navigate('Subpages', {
-            //     screen: 'EditProfile',
-            //     params: { matric: matric.value }
-            // }))
-            // Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
-            //     .then(() => navigation.navigate('Subpages', {
-            //         screen: 'EditProfile',
-            //         params: { matric: matric.value }
-            //     }))
-            //show green message
-            //redirect to login page
-            // redirect to already logged in profile page
         }
 
         setLoading(false);
@@ -85,16 +67,6 @@ const Signup = ({ navigation }) => {
                         error={!!matric.error}
                         errorText={matric.error}
                         value={matric.value} />
-                </View>
-                <View style={styles.inputBox}>
-                    <TextInput style={styles.inputBoxText}
-                        placeholder='Email Address'
-                        onChangeText={text => setEmail({ value: text, error: '' })}
-                        placeholderTextColor='#000000'
-                        keyboardType='email-address'
-                        error={!!email.error}
-                        errorText={email.error}
-                        value={email.value} />
                 </View>
                 <View style={styles.inputBox}>
                     <TextInput style={styles.inputBoxText}

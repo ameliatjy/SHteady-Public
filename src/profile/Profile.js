@@ -28,7 +28,6 @@ export default class Profile extends Component {
     state = {
         matric: null,
         currname: null,
-        curremail: null,
         currroom: null,
         status: null,
         msgVisible: false,
@@ -133,7 +132,6 @@ export default class Profile extends Component {
                 self.setState({ matric: user.displayName })
                 firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
                     self.setState({ currname: snapshot.val().name })
-                    self.setState({ curremail: snapshot.val().email })
                     self.setState({ currroom: snapshot.val().room })
                     self.setState({ status: snapshot.val().status })
                     snapshot.val().profilePicUrl === 'default'
@@ -143,9 +141,8 @@ export default class Profile extends Component {
                     snapshot.val().room === 'Enter room number'
                         ? self.setState({ msgVisible: true })
                         : self.setState({ msgVisible: false })
-                    while (self.state.matric == null || self.state.curremail == null ||
-                        self.state.currname == null || self.state.currroom == null ||
-                        self.state.status == null) {
+                    while (self.state.matric == null || self.state.currname == null ||
+                        self.state.currroom == null || self.state.status == null) {
                         setTimeout(function () { }, 3000);
                         console.log("getting data, setting timeout");
                     }
