@@ -51,14 +51,14 @@ const Login = ({ navigation }) => {
                 <View style={styles.inputBox}>
                     <TextInput style={styles.inputBoxText}
                         placeholder='Matric Number'
-                        placeholderTextColor='#000000'
+                        placeholderTextColor='rgba(0,0,0,0.6)'
                         onChangeText={text => setMatric({ value: text, error: '' })} />
                 </View>
                 <View style={styles.inputBox}>
                     <TextInput style={styles.inputBoxText}
                         placeholder='Password'
                         secureTextEntry
-                        placeholderTextColor='#000000'
+                        placeholderTextColor='rgba(0,0,0,0.6)'
                         onChangeText={text => setPassword({ value: text, error: '' })} />
                 </View>
                 <TouchableOpacity style={styles.button} onPress={onLoginPressed}>
@@ -106,10 +106,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     inputBox: {
-        backgroundColor: 'rgba(0,0,0,0.3)',
+        borderColor: 'rgba(0,0,0,0.5)',
+        borderWidth: 1,
         width: 300,
         height: 40,
-        borderRadius: 25,
+        borderRadius: 5,
         marginVertical: 5,
     },
     inputBoxText: {
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
         width: 300,
         height: 40,
         backgroundColor: '#ff7d1d',
-        borderRadius: 25,
+        borderRadius: 5,
         marginVertical: 10,
         justifyContent: 'center',
     },

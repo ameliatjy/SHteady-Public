@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert, View, Text, Keyboard } from 'react-native';
 import { ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Send, IMessage } from 'react-native-gifted-chat';
 import IconMCI from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import firebase from 'firebase/app';
@@ -10,9 +10,35 @@ import { SafeAreaView } from 'react-navigation';
 
 export default class Announcements extends Component {
 
+    constructor(props) {
+        super(props)
+    }
+
     state = {
         messages: [],
     };
+
+    // componentDidUpdate(prevProps) {
+    //     const { messages, text, inverted } = this.props;
+
+    //     if (this.props !== prevProps) {
+    //         this.setMessages(messages || []);
+    //     }
+
+    //     if (
+    //         inverted === false &&
+    //         messages &&
+    //         prevProps.messages &&
+    //         messages.length !== prevProps.messages.length &&
+    //         this.props.scrollToBottom
+    //     ) {
+    //         setTimeout(() => this.scrollToBottom(false), 200);
+    //     }
+
+    //     if (text !== prevProps.text) {
+    //         this.setTextFromProp(text);
+    //     }
+    // }
 
     // can be changed later to check access different eg based on cca
     checkAccess = () => {
@@ -75,10 +101,12 @@ export default class Announcements extends Component {
         };
     }
 
+
+
     componentDidMount() {
         this.get(message =>
             this.setState(previousState => ({
-                messages: GiftedChat.append(previousState.messages, message),
+                messages: GiftedChat.prepend(previousState.messages, message), //?
             }))
         );
     }
@@ -150,11 +178,14 @@ export default class Announcements extends Component {
                     renderComposer={! this.checkAccess() ? () => null : undefined}
                     minInputToolbarHeight={! this.checkAccess() ? 0 : undefined}
                     renderUsernameOnMessage={true}
-                    scrollToBottom={true}
+                    scrollToBottom={false} //?
                     scrollToBottomComponent={this.scrollToBottomComponent}
                     keyboardShouldPersistTaps={'never'}
                     renderBubble={this.renderBubble}
                     renderSend={this.renderSend}
+                    // listViewProps={{ onRefresh, refreshing: loading }}
+                    inverted={false} //?
+                    main
                 />
             // {/* </SafeAreaView> */}
         );

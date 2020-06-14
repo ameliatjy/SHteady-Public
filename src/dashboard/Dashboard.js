@@ -7,6 +7,7 @@ import moment from 'moment';
 
 import firebase from 'firebase/app';
 import 'firebase/auth';
+// import { diff } from 'react-native-reanimated';
 
 export default class DashBoard extends Component {
 
@@ -38,7 +39,7 @@ export default class DashBoard extends Component {
         return firebase.database().ref('/dashboard').off()
     }
 
-    oneTimeTaskConfirmation = (currtask, moreInfo, priority) => {
+    oneTimeTaskConfirmation = (currtask, moreInfo, priority, autoDelete) => {
         var user = firebase.auth().currentUser;
 
         var matric = user.displayName
@@ -59,10 +60,12 @@ export default class DashBoard extends Component {
             block: block,
         }, priority)
 
+        var key = newRequest.getKey()
+
         // delete tasks after a period of time
-        // setTimeout(() => {
-            
-        // }, timeout);
+        setTimeout(() => {
+            firebase.database().ref('dashboard/').child(key).remove()
+        }, autoDelete);
     }
 
     closeMyWindowsButton() {
@@ -71,7 +74,7 @@ export default class DashBoard extends Component {
             'Please help me close my windows!!!',
             [
                 {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please close my windows!', '', 1), style: 'default'},
+                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please close my windows!', '', 1, 3600000), style: 'default'},
             ]
         );
     }
@@ -81,7 +84,7 @@ export default class DashBoard extends Component {
     }
      
     dabaoHandleConfirm = () => {
-        this.oneTimeTaskConfirmation('Please help me dabao commhall!', 'Food to daobao:\n' + this.state.dabaoText, 3)
+        this.oneTimeTaskConfirmation('Please help me dabao commhall!', 'Food to daobao:\n' + this.state.dabaoText, 3, 43200000)
         this.setState({ dabaoDialogVisible: false });
     }
      
@@ -100,7 +103,9 @@ export default class DashBoard extends Component {
     }
      
     wakeupHandleConfirm = (datetime) => {
-        this.oneTimeTaskConfirmation('Please wake me up!', moment(datetime).format('llll'), 4)
+        var difference = moment(datetime).diff(moment(firebase.database.ServerValue.TIMESTAMP))
+        console.warn(difference)
+        this.oneTimeTaskConfirmation('Please wake me up!', moment(datetime).format('llll'), 4, difference)
         this.hideDatetimePicker();
     }
 
@@ -110,7 +115,7 @@ export default class DashBoard extends Component {
             'Halim coming!!! Help me hide my aircon PLEASE!!!',
             [
                 {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
-                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please hide my aircon!', '', 2), style: 'default'},
+                {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please hide my aircon!', '', 2, 1800000), style: 'default'},
             ]
         );
     }
@@ -120,7 +125,7 @@ export default class DashBoard extends Component {
     }
      
     groceriesHandleConfirm = () => {
-        this.oneTimeTaskConfirmation('Please help me get groceries!', this.state.groceriesText, 5)
+        this.oneTimeTaskConfirmation('Please help me get groceries!', this.state.groceriesText, 5, 172800000)
         this.setState({ groceriesDialogVisible: false });
     }
      
@@ -135,7 +140,7 @@ export default class DashBoard extends Component {
     }
      
     othersHandleConfirm = () => {
-        this.oneTimeTaskConfirmation('Please help me with something!', this.state.othersText, 6)
+        this.oneTimeTaskConfirmation('Please help me with something!', this.state.othersText, 6, 172800000)
         this.setState({ othersDialogVisible: false });
     }
      

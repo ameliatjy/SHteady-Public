@@ -52,7 +52,7 @@ const Signup = ({ navigation }) => {
                     <TextInput style={styles.inputBoxText}
                         placeholder='Full Name'
                         onChangeText={text => setName({ value: text, error: '' })}
-                        placeholderTextColor='#000000'
+                        placeholderTextColor='rgba(0,0,0,0.6)'
                         autoCapitalize="words"
                         error={!!name.error}
                         errorText={name.error}
@@ -62,7 +62,7 @@ const Signup = ({ navigation }) => {
                     <TextInput style={styles.inputBoxText}
                         placeholder='Matriculation Number'
                         onChangeText={text => setMatric({ value: text, error: '' })}
-                        placeholderTextColor='#000000'
+                        placeholderTextColor='rgba(0,0,0,0.6)'
                         autoCapitalize="words"
                         error={!!matric.error}
                         errorText={matric.error}
@@ -72,7 +72,7 @@ const Signup = ({ navigation }) => {
                     <TextInput style={styles.inputBoxText}
                         placeholder='Password'
                         secureTextEntry
-                        placeholderTextColor='#000000'
+                        placeholderTextColor='rgba(0,0,0,0.6)'
                         error={!!password.error}
                         errorText={password.error}
                         value={password.value}
@@ -82,7 +82,7 @@ const Signup = ({ navigation }) => {
                     <TextInput style={styles.inputBoxText}
                         placeholder='Confirm Password'
                         secureTextEntry
-                        placeholderTextColor='#000000'
+                        placeholderTextColor='rgba(0,0,0,0.6)'
                         error={!!confirmPassword.error}
                         errorText={confirmPassword.error}
                         value={confirmPassword.value}
@@ -144,10 +144,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     inputBox: {
-        backgroundColor: 'rgba(0,0,0,0.3)',
+        borderColor: 'rgba(0,0,0,0.5)',
+        borderWidth: 1,
         width: 300,
         height: 40,
-        borderRadius: 25,
+        borderRadius: 5,
         marginVertical: 5,
     },
     inputBoxText: {
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
         width: 300,
         height: 40,
         backgroundColor: '#ff7d1d',
-        borderRadius: 25,
+        borderRadius: 5,
         marginVertical: 10,
         justifyContent: 'center',
     },
