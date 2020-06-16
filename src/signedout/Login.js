@@ -29,14 +29,6 @@ const Login = ({ navigation }) => {
         if (response.error) {
             setError(response.error);
         } else {
-            // navigation.navigate('SignedIn', {
-            //     screen: 'Profile',
-            //     params: { matric: matric.value },
-            // })
-            // Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
-            //     .then(() => navigation.navigate('Profile', {
-            //         params: { matric: matric.value }
-            //     }))
             Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
                 .then(() => navigation.navigate('Profile'));
         }
@@ -52,7 +44,7 @@ const Login = ({ navigation }) => {
                     <TextInput style={styles.inputBoxText}
                         placeholder='Matric Number'
                         placeholderTextColor='rgba(0,0,0,0.6)'
-                        onChangeText={text => setMatric({ value: text, error: '' })} />
+                        onChangeText={text => setMatric({ value: text.toUpperCase(), error: '' })} />
                 </View>
                 <View style={styles.inputBox}>
                     <TextInput style={styles.inputBoxText}
@@ -63,12 +55,6 @@ const Login = ({ navigation }) => {
                 </View>
                 <TouchableOpacity style={styles.button} onPress={onLoginPressed}>
                     <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.signupTextCont}>
-                <Text style={styles.signupText}>Don't have an account yet?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                    <Text style={styles.signupButton}> Signup</Text>
                 </TouchableOpacity>
             </View>
             <ErrorMsg message={error} onDismiss={() => setError("")} />

@@ -37,7 +37,7 @@ export default class Meals extends Component {
             setTimeout(function() {}, 3000)
         }
 
-        firebase.database().ref('users/' + matric).on('value', function (snapshot) {
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
             availcredits = snapshot.val().mealcredit;
             name = snapshot.val().name;
         })
@@ -52,7 +52,7 @@ export default class Meals extends Component {
         })
 
         this.setState({ mealcredit: availcredits - 1 })
-        firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits - 1)
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(availcredits - 1)
         firebase.database().ref('donatedmeals').set(donatedmeals + 1);
         firebase.database().ref('mealsdonatedfrom').set(mealsdonatedfrom);
 
@@ -105,7 +105,7 @@ export default class Meals extends Component {
         firebase.database().ref().on('value', function (snapshot) {
             donatedmeals = snapshot.val().donatedmeals;
         })
-        firebase.database().ref('users/' + matric).on('value', function (snapshot) {
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
             availcredits = snapshot.val().mealcredit;
         })
 
@@ -128,7 +128,7 @@ export default class Meals extends Component {
         }
 
         this.setState({ mealcredit: availcredits + 1 })
-        firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits + 1)
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(availcredits + 1)
         firebase.database().ref('donatedmeals').set(donatedmeals - 1);
         firebase.database().ref('mealsdonatedfrom').set(newarray);
 
@@ -186,12 +186,12 @@ export default class Meals extends Component {
 
         var matric = user.displayName
         var availcredits
-        firebase.database().ref('users/' + matric).on('value', function (snapshot) {
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
             availcredits = snapshot.val().mealcredit;
         })
 
         this.setState({ mealcredit: availcredits - 1 })
-        firebase.database().ref('users/' + matric).child('mealcredit').set(availcredits - 1)
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(availcredits - 1)
     }
 
     redeemcredit = () => {
@@ -228,7 +228,7 @@ export default class Meals extends Component {
         unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 self.setState({ matric: user.displayName })
-                firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
+                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(user.displayName).on('value', function (snapshot) {
                     self.setState({ mealcredit: snapshot.val().mealcredit })
                     while (self.state.matric == null || self.state.mealcredit == null) {
                         setTimeout(function () { }, 3000);
