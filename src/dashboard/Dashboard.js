@@ -44,7 +44,7 @@ export default class DashBoard extends Component {
 
         var matric = user.displayName
         var currroom, currname, block
-        firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function(snapshot) {
             currroom = snapshot.val().room;
             currname = snapshot.val().name;
             block = currroom.substring(0, 1);
