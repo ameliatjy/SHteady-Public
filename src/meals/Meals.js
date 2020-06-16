@@ -256,7 +256,7 @@ export default class Meals extends Component {
                         <Text style={styles.redeembtn}>Redeem</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{ flexDirection: 'row', paddingTop: 5 }} >
+                <View style={{ flexDirection: 'row', paddingTop: 5, flex: 9 }} >
                     <View style={{ justifyContent: 'flex-end' }}>
                         <TouchableOpacity onPress={this.viewMenu}>
                             <Image source={require('../images/menu.png')}
@@ -290,7 +290,8 @@ const styles = StyleSheet.create({
     mealcreditdisplay: {
         backgroundColor: '#ffd4b3',
         flexDirection: 'row',
-        paddingVertical: 19
+        paddingVertical: 15,
+        flex: 1
     },
     mealcreditword: {
         paddingRight: 100,
