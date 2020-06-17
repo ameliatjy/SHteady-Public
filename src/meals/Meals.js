@@ -19,6 +19,7 @@ export default class Meals extends Component {
     state = {
         matric: null,
         mealcredit: null,
+        lastloggedin: null,
     }
 
     viewMenu = () => {
@@ -29,13 +30,10 @@ export default class Meals extends Component {
         var user = firebase.auth().currentUser;
 
         var matric = user.displayName
-        var availcredits, donatedmeals, name
-        firebase.database().ref().on('value', function (snapshot) {
-            donatedmeals = snapshot.val().donatedmeals;
+        var availcredits, name
+        firebase.database().ref().once('value', function (snapshot) {
+            firebase.database().ref('donatedmeals').set(snapshot.val().donatedmeals + 1);
         })
-        while (donatedmeals === null) {
-            setTimeout(function() {}, 3000)
-        }
 
         firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
             availcredits = snapshot.val().mealcredit;
@@ -43,18 +41,17 @@ export default class Meals extends Component {
         })
 
         var mealsdonatedfrom
-        firebase.database().ref('mealsdonatedfrom').on('value', function (snapshot) {
-                mealsdonatedfrom = [name]
-                snapshot.forEach(function(item) {
-                    var itemVal = item.val();
-                    mealsdonatedfrom.push(itemVal);
-                })
+        firebase.database().ref('mealsdonatedfrom').once('value', function (snapshot) {
+            mealsdonatedfrom = [name]
+            snapshot.forEach(function (item) {
+                var itemVal = item.val();
+                mealsdonatedfrom.push(itemVal);
+            })
+            firebase.database().ref('mealsdonatedfrom').set(mealsdonatedfrom);
         })
 
         this.setState({ mealcredit: availcredits - 1 })
         firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(availcredits - 1)
-        firebase.database().ref('donatedmeals').set(donatedmeals + 1);
-        firebase.database().ref('mealsdonatedfrom').set(mealsdonatedfrom);
 
         Alert.alert(
             "Successful",
@@ -97,41 +94,15 @@ export default class Meals extends Component {
         }
     }
 
-    confirmsecondmeal = () => {
-        var user = firebase.auth().currentUser;
-
-        var matric = user.displayName
-        var availcredits, donatedmeals, mealsdonatedfrom
-        firebase.database().ref().on('value', function (snapshot) {
-            donatedmeals = snapshot.val().donatedmeals;
-        })
-        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
-            availcredits = snapshot.val().mealcredit;
-        })
-
-        var mealsdonatedfrom
-        firebase.database().ref('mealsdonatedfrom').on('value', function (snapshot) {
-            mealsdonatedfrom = []
-                snapshot.forEach(function(item) {
-                    var itemVal = item.val();
-                    mealsdonatedfrom.push(itemVal);
-                })
-        })
-
-        var newarray, donor;
-        if (mealsdonatedfrom.length === 1) {
-            newarray = 0
-            donor = mealsdonatedfrom.shift();
+    updatedatabase = (newarray) => {
+        var donor;
+        if (newarray.length === 1) {
+            firebase.database().ref('mealsdonatedfrom').set(0);
+            donor = newarray.shift();
         } else {
-            donor = mealsdonatedfrom.shift();
-            newarray = mealsdonatedfrom
+            donor = newarray.shift();
+            firebase.database().ref('mealsdonatedfrom').set(newarray);
         }
-
-        this.setState({ mealcredit: availcredits + 1 })
-        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(availcredits + 1)
-        firebase.database().ref('donatedmeals').set(donatedmeals - 1);
-        firebase.database().ref('mealsdonatedfrom').set(newarray);
-
         Alert.alert(
             "Successful",
             "You have redeemed a meal from " + donor + " !",
@@ -143,42 +114,67 @@ export default class Meals extends Component {
         )
     }
 
+    confirmsecondmeal = () => {
+        var self = this;
+        var user = firebase.auth().currentUser;
+
+        var matric = user.displayName
+        var availcredits, donatedmeals, mealsdonatedfrom
+        firebase.database().ref().once('value', function (snapshot) {
+            firebase.database().ref('donatedmeals').set(snapshot.val().donatedmeals - 1);
+        })
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
+            availcredits = snapshot.val().mealcredit;
+        })
+
+        var mealsdonatedfrom
+        firebase.database().ref('mealsdonatedfrom').once('value', function (snapshot) {
+            mealsdonatedfrom = []
+            snapshot.forEach(function (item) {
+                var itemVal = item.val();
+                mealsdonatedfrom.push(itemVal);
+            })
+            self.updatedatabase(mealsdonatedfrom);
+        })
+
+        this.setState({ mealcredit: availcredits + 1 })
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(availcredits + 1)
+    }
+
     secondMeal = () => {
+        var self = this;
         var user = firebase.auth().currentUser;
 
         var matric = user.displayName
         var donatedmeals
-        firebase.database().ref('donatedmeals').on('value', function (snapshot) {
-            donatedmeals = snapshot.val();
+        firebase.database().ref('donatedmeals').once('value', function (snapshot) {
+            if (snapshot.val() <= 0) {
+                Alert.alert(
+                    "Unsuccessful",
+                    "There are no meals up for redemption.",
+                    [
+                        {
+                            text: "Ok"
+                        }
+                    ]
+                )
+            } else {
+                Alert.alert(
+                    "Extra meal credit",
+                    "There are " + snapshot.val() + " donated meals. Are you sure you'd like to have a second serving?",
+                    [
+                        {
+                            text: "Cancel",
+                            style: "cancel"
+                        },
+                        {
+                            text: "YES",
+                            onPress: self.confirmsecondmeal
+                        }
+                    ]
+                )
+            }
         })
-
-        if (donatedmeals <= 0) {
-            Alert.alert(
-                "Unsuccessful",
-                "There are no meals up for redemption.",
-                [
-                    {
-                        text: "Ok"
-                    }
-                ]
-            )
-        } else {
-            Alert.alert(
-                "Extra meal credit",
-                "There are " + donatedmeals + " donated meals. Are you sure you'd like to have a second serving?",
-                [
-                    {
-                        text: "Cancel",
-                        style: "cancel"
-                    },
-                    {
-                        text: "YES",
-                        onPress: this.confirmsecondmeal
-                    }
-                ]
-            )
-        }
-        //this.props.navigation.navigate('Subpages', { screen: 'Redeem', params: { currPage: 'Redeem' } });
     }
 
     updatecredit = () => {
@@ -230,11 +226,54 @@ export default class Meals extends Component {
                 self.setState({ matric: user.displayName })
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(user.displayName).on('value', function (snapshot) {
                     self.setState({ mealcredit: snapshot.val().mealcredit })
-                    while (self.state.matric == null || self.state.mealcredit == null) {
+                    self.setState({ lastloggedin: snapshot.val().lastloggedin })
+                    while (self.state.matric == null || self.state.mealcredit == null || self.state.lastloggedin == null) {
                         setTimeout(function () { }, 3000);
                         console.log("getting data, setting timeout");
                     }
                 })
+                var date = new Date().getDate().toString();
+                if (date.length == 1) {
+                    date = "0" + date;
+                }
+                var month = (new Date().getMonth() + 1).toString();
+                if (month.length == 1) {
+                    month = "0" + month;
+                }
+                var year = new Date().getFullYear();
+                var hours = new Date().getHours().toString();
+                if (hours.length == 1) {
+                    hours = "0" + hours;
+                }
+
+                var currdate = year + month + date;
+
+                var lastloggedindate = self.state.lastloggedin.substring(0, 8);
+                var lastloggedinhour = self.state.lastloggedin.substring(9, 11);
+
+                if (Number(hours) > 7 && Number(hours) < 11) { // if current time is breakfast time
+                    // check if last logged in time is within also
+                    if (currdate > lastloggedindate) {
+                        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(1)
+                    } else { //same day
+                        if (Number(lastloggedinhour) > 7 && Number(lastloggedinhour) < 11) {
+                            // dont change meal credit
+                        } else {
+                            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(1)
+                        }
+                    }
+                } else if (Number(hours) > 17 && Number(hours) < 22) { // dinner time
+                    // check if last logged in time is within also
+                    if (currdate > lastloggedindate) {
+                        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(1)
+                    } else { //same day
+                        if (Number(lastloggedinhour) > 17 && Number(lastloggedinhour) < 22) {
+                            // dont change meal credit
+                        } else {
+                            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(1)
+                        }
+                    }
+                }
             }
         })
     }
