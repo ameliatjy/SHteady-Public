@@ -185,7 +185,6 @@ const followupaction = (matric, email, password, iscreated) => {
     }
 }
 
-
 export const loginUser = async ({ matric, email, password }) => {
     if (matric.length <= 0) {
         return { error: "Matric number cannot be empty." }
@@ -196,13 +195,7 @@ export const loginUser = async ({ matric, email, password }) => {
     } else if (matric.startsWith("cca")) {
         return { error: "Login with admin account denied." }
     } else {
-        var iscreated;
         return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').once('value', function (snapshot) {
-            // if (typeof snapshot.val() === 'undefined') {
-            //     iscreated = null;
-            // } else {
-            //     iscreated = snapshot.val();
-            // }
             followupaction(matric, email, password, snapshot.val());
         })
     }
