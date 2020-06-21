@@ -30,7 +30,7 @@ export default class Status extends Component {
             console.log('status chunk')
             if (user) {
                 self.setState({ matric: user.displayName })
-                firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
+                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(user.displayName).on('value', function (snapshot) {
                     self.setState({ avail: snapshot.val().status })
                     while (self.state.matric == null || self.state.avail == null) {
                         setTimeout(function () { }, 3000);
@@ -56,7 +56,7 @@ export default class Status extends Component {
 
         const updateDatabase = (newStatus) => {
             console.log("updatedatabase method called");
-            firebase.database().ref('users/' + this.state.matric).child('status').set(newStatus);
+            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + this.state.matric).child('status').set(newStatus);
         }
 
         // const updatedStatus = () => {
