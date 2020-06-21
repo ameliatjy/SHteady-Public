@@ -62,11 +62,10 @@ export const logoutUser = () => {
 //     }
 // }
 
-const followupaction = (matric, email, password, iscreated) => {
-    if (iscreated == null) {
+const followupaction = (matric, email, password, isshearite, iscreated) => {
+    if (isshearite === false) {
         return {
-            // error: "Invalid user." //matric number is not a registered shearite aka not in the sheets
-            error: "Please try again." //uhm need to use this phrase bc firebase takes time to get data so on first click of login, iscreated will still be null...
+            error: "Invalid user." //matric number is not a registered shearite aka not in the sheets
         }
     } else if (iscreated) { //not first time log in
         return firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
@@ -196,7 +195,9 @@ export const loginUser = async ({ matric, email, password }) => {
         return { error: "Login with admin account denied." }
     } else {
         return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').once('value', function (snapshot) {
-            followupaction(matric, email, password, snapshot.val());
+            console.log('iscreated value', snapshot.val()); // null
+            console.log('exists or not', snapshot.exists()) // false
+            followupaction(matric, email, password, snapshot.exists(), snapshot.val());
         })
     }
 };
