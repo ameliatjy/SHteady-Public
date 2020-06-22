@@ -17,7 +17,7 @@ export default class Report extends Component {
         var curruser = firebase.auth().currentUser
         var matric = curruser.displayName
         var curraccess = []
-        firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/'+ matric).on('value', function(snapshot) {
             curraccess = snapshot.val().cca ? snapshot.val().cca : [];
         })
         return curraccess.includes('JCRC')

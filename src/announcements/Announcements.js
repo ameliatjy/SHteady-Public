@@ -45,7 +45,7 @@ export default class Announcements extends Component {
         var curruser = firebase.auth().currentUser
         var matric = curruser.displayName
         var curraccess = []
-        firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/'+ matric).on('value', function(snapshot) {
             // curremail = snapshot.val().email;
             curraccess = snapshot.val().cca ? snapshot.val().cca : [];
         })
@@ -89,7 +89,7 @@ export default class Announcements extends Component {
         var matric = curruser.displayName
         var currname
         // curremail
-        firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/'+ matric).on('value', function(snapshot) {
             // curremail = snapshot.val().email;
             currname = snapshot.val().name;
         })

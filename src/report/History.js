@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import moment from 'moment';
 
 import IconEntypo from 'react-native-vector-icons/Entypo'
@@ -47,7 +47,7 @@ export default class History extends Component {
 
         var matric = user.displayName
         var currReports = []
-        firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/'+ matric).on('value', function(snapshot) {
                 // curremail = snapshot.val().email;
             currReports = snapshot.val().submittedReports ? snapshot.val().submittedReports : [];
         })

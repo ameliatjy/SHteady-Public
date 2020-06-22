@@ -26,9 +26,12 @@ const Login = ({ navigation }) => {
             password: password.value
         });
 
+        console.log('navigating????')
+
         if (response.error) {
             setError(response.error);
         } else {
+            console.log('navigating')
             Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
                 .then(() => navigation.navigate('Profile'));
         }
