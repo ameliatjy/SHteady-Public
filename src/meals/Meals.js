@@ -251,26 +251,26 @@ export default class Meals extends Component {
                 var lastloggedindate = self.state.lastloggedin.substring(0, 8);
                 var lastloggedinhour = self.state.lastloggedin.substring(9, 11);
 
-                if (Number(hours) > 7 && Number(hours) < 11) { // if current time is breakfast time
+                if (Number(hours) >= 7 && Number(hours) <= 11) { // if current time is breakfast time
                     // check if last logged in time is within also
                     if (currdate > lastloggedindate) {
-                        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(1)
+                        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
                     } else { //same day
-                        if (Number(lastloggedinhour) > 7 && Number(lastloggedinhour) < 11) {
+                        if (Number(lastloggedinhour) >= 7 && Number(lastloggedinhour) <= 11) {
                             // dont change meal credit
                         } else {
-                            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(1)
+                            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
                         }
                     }
-                } else if (Number(hours) > 17 && Number(hours) < 22) { // dinner time
+                } else if (Number(hours) >= 17 && Number(hours) <= 22) { // dinner time
                     // check if last logged in time is within also
                     if (currdate > lastloggedindate) {
-                        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(1)
+                        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
                     } else { //same day
-                        if (Number(lastloggedinhour) > 17 && Number(lastloggedinhour) < 22) {
+                        if (Number(lastloggedinhour) >= 17 && Number(lastloggedinhour) <= 22) {
                             // dont change meal credit
                         } else {
-                            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).child('mealcredit').set(1)
+                            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
                         }
                     }
                 }
