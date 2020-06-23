@@ -213,7 +213,29 @@ const followupaction = (matric, email, password, iscreated) => {
 
             console.log('sign in!')
 
-            var timestamp = moment(new Date()).format('lll')
+            var date = new Date().getDate().toString();
+            if (date.length == 1) {
+                date = "0" + date;
+            }
+            var month = (new Date().getMonth() + 1).toString();
+            if (month.length == 1) {
+                month = "0" + month;
+            }
+            var year = new Date().getFullYear();
+            var hours = new Date().getHours().toString();
+            if (hours.length == 1) {
+                hours = "0" + hours;
+            }
+            var min = new Date().getMinutes().toString();
+            if (min.length == 1) {
+                min = "0" + min;
+            }
+            var sec = new Date().getSeconds().toString();
+            if (sec.length == 1) {
+                sec = "0" + sec;
+            }
+
+            var timestamp = year + month + date + ' ' + hours + ':' + min + ':' + sec;
 
             firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/lastloggedin').set(timestamp);
             return user;
@@ -251,8 +273,30 @@ const followupaction = (matric, email, password, iscreated) => {
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/profilePicUrl').set('default');
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/mealcredit').set(0);
 
-                
-                var timestamp = moment(new Date()).format('lll')
+
+                var date = new Date().getDate().toString();
+                if (date.length == 1) {
+                    date = "0" + date;
+                }
+                var month = (new Date().getMonth() + 1).toString();
+                if (month.length == 1) {
+                    month = "0" + month;
+                }
+                var year = new Date().getFullYear();
+                var hours = new Date().getHours().toString();
+                if (hours.length == 1) {
+                    hours = "0" + hours;
+                }
+                var min = new Date().getMinutes().toString();
+                if (min.length == 1) {
+                    min = "0" + min;
+                }
+                var sec = new Date().getSeconds().toString();
+                if (sec.length == 1) {
+                    sec = "0" + sec;
+                }
+
+                var timestamp = year + month + date + ' ' + hours + ':' + min + ':' + sec;
 
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/lastloggedin').set(timestamp);
                 user.user.updateProfile({
@@ -292,9 +336,9 @@ export const loginUser = async ({ matric, email, password }) => {
         return { error: "Password cannot be empty." }
     } else if (matric.startsWith("cca")) {
         return { error: "Login with admin account denied." }
-    } else { 
+    } else {
 
-        var 
+        var
         // var isshearite = false
         // return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(matric).once('value', function(snapshot) {
         //     isshearite = (snapshot.val() !== null)
@@ -314,8 +358,8 @@ export const loginUser = async ({ matric, email, password }) => {
         //             followupaction(matric, email, password, iscreated);
         //         })
         //     }
-            
+
         // })
-        
+
     }
 }
