@@ -20,6 +20,8 @@ let unsubscribe;
 
 export default class Communities extends Component {
 
+    mymatric = firebase.auth().currentUser.displayName;
+
     state = {
         groups: [],
         activeSections: [],
@@ -83,11 +85,16 @@ export default class Communities extends Component {
         var membersarray = this.test
         var statusmap = this.status
         var profilepicmap = this.profilepic
+        var me = this.mymatric
         firebase.database().ref('CCA/' + ccaname + '/' + key).on('value', function (snapshot) {
             var matric = snapshot.val().matric;
             firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
                 // curremail = snapshot.val().email;
-                var name = snapshot.val().name;
+                if (matric === me) {
+                    var name = snapshot.val().name + ' (Me)';
+                } else {
+                    var name = snapshot.val().name;
+                }
                 var status = snapshot.val().status;
                 var profilepic = snapshot.val().profilePicUrl;
                 membersarray.push(name)
