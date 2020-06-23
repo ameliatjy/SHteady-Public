@@ -14,7 +14,8 @@ export const StatusButton = ({ type }) => (
                 opacity:0.8,
                 color: type === 'yo hmu i am in' ? '#39ff14'
                     : type === 'i am out of hall' ? '#ff0000'
-                        : '#fed000'
+                        : type === 'busy... do not find me' ? '#fed000'
+                            : '#b9beb9' // accounts that havent been set up
             }} />
     </View>
 );
