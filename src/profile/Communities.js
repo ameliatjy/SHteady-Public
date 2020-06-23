@@ -13,6 +13,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 
 import Accordion from 'react-native-collapsible/Accordion';
+import { StatusButton } from '../components/statusbutton';
 
 let unsubscribe;
 
@@ -22,6 +23,8 @@ export default class Communities extends Component {
         groups: [],
         activeSections: []
     }
+
+    test = ["Amelia Tan Jin Yu", "Loh Wen Yu"]
 
     goToCommunity = () => {
         Alert.alert('Going to check members of this community');
@@ -33,7 +36,7 @@ export default class Communities extends Component {
             console.log('Communities chunk')
             if (user) {
                 self.setState({ matric: user.displayName })
-                firebase.database().ref('users/').child(user.displayName).on('value', function (snapshot) {
+                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(user.displayName).on('value', function (snapshot) {
                     var grps = snapshot.val().cca
                     typeof grps === 'undefined'
                         ? self.setState({ groups: [] })
@@ -59,7 +62,7 @@ export default class Communities extends Component {
     _renderSectionTitle = section => {
         return (
             <View style={styles.container}>
-                <Text>{section}</Text>
+                <Text style={styles.ccaname}>{section}</Text>
             </View>
         );
     };
@@ -75,7 +78,12 @@ export default class Communities extends Component {
     _renderContent = section => {
         return (
             <View style={styles.membersDisplay}>
-                <Text>{section.content}</Text>
+                {this.test.map((item) => (
+                    <View style={styles.membersdetails}>
+                        <Text style={styles.membersname}>{item}</Text>
+                        <StatusButton type='yo hmu i am in' />
+                    </View>
+                ))}
             </View>
         );
     };
@@ -107,7 +115,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         marginTop: 10,
         backgroundColor: '#fff',
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
     },
     text: {
         color: '#808080',
@@ -126,7 +134,19 @@ const styles = StyleSheet.create({
     membersDisplay: {
         backgroundColor: '#fff',
         alignItems: 'flex-start',
-        paddingLeft: 20,
+        paddingLeft: 35,
         paddingBottom: 20,
+        flexDirection: 'column'
+    },
+    ccaname: {
+        fontWeight: 'bold',
+    },
+    membersname: {
+        flex: 5,
+        alignSelf: 'center'
+    },
+    membersdetails: {
+        flexDirection: 'row',
+        paddingBottom: 5
     }
 });
