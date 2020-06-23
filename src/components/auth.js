@@ -64,146 +64,6 @@ export const logoutUser = () => {
 //     }
 // }
 
-// const followupaction = (matric, email, password, isshearite, iscreated) => {
-//     // if (isshearite === false) {
-//     //     return {
-//     //         error: "Invalid user." //matric number is not a registered shearite aka not in the sheets
-//     //     }
-//     // } else if (iscreated) { //not first time log in
-//         return firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
-//             //var current = firebase.auth().currentUser;
-
-//             console.log('sign in!')
-
-//             var date = new Date().getDate().toString();
-//             if (date.length == 1) {
-//                 date = "0" + date;
-//             }
-//             var month = (new Date().getMonth() + 1).toString();
-//             if (month.length == 1) {
-//                 month = "0" + month;
-//             }
-//             var year = new Date().getFullYear();
-//             var hours = new Date().getHours().toString();
-//             if (hours.length == 1) {
-//                 hours = "0" + hours;
-//             }
-//             var min = new Date().getMinutes().toString();
-//             if (min.length == 1) {
-//                 min = "0" + min;
-//             }
-//             var sec = new Date().getSeconds().toString();
-//             if (sec.length == 1) {
-//                 sec = "0" + sec;
-//             }
-
-//             var timestamp = year + month + date + ' ' + hours + ':' + min + ':' + sec;
-
-//             firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/lastloggedin').set(timestamp);
-//             return user;
-//         }, function (error) {
-//             switch (error.code) {
-//                 case "auth/invalid-email":
-//                     return {
-//                         error: "Invalid matric number."
-//                     };
-//                 case "auth/user-not-found":
-//                 case "auth/wrong-password":
-//                     return {
-//                         error: "Invalid matric number or password."
-//                     };
-//                 case "auth/too-many-requests":
-//                     return {
-//                         error: "Too many request. Try again in a minute."
-//                     };
-//                 default:
-//                     return {
-//                         error: "Check your internet connection."
-//                     };
-//             }
-//         })
-//     } else {
-//         if (matric != password) { //first time user matric and pw is same in caps
-//             return { error: 'Wrong matric/password for first-time users.' }
-//         }
-//         return firebase.auth().createUserWithEmailAndPassword(email, password)
-//             .then(function (user) {
-//                 console.log('signed up!')
-//                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').set(true);
-//                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/status').set("yo hmu i am in");
-//                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/profilePicUrl').set('default');
-//                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/mealcredit').set(0);
-
-//                 var date = new Date().getDate().toString();
-//                 if (date.length == 1) {
-//                     date = "0" + date;
-//                 }
-//                 var month = (new Date().getMonth() + 1).toString();
-//                 if (month.length == 1) {
-//                     month = "0" + month;
-//                 }
-//                 var year = new Date().getFullYear();
-//                 var hours = new Date().getHours().toString();
-//                 if (hours.length == 1) {
-//                     hours = "0" + hours;
-//                 }
-//                 var min = new Date().getMinutes().toString();
-//                 if (min.length == 1) {
-//                     min = "0" + min;
-//                 }
-//                 var sec = new Date().getSeconds().toString();
-//                 if (sec.length == 1) {
-//                     sec = "0" + sec;
-//                 }
-//                 var timestamp = year + month + date + ' ' + hours + ':' + min + ':' + sec;
-
-//                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/lastloggedin').set(timestamp);
-//                 user.user.updateProfile({
-//                     displayName: matric
-//                 })
-//                 return user.user
-//             }, function (error) {
-//                 console.log(error);
-//                 switch (error.code) {
-//                     case "auth/email-already-in-use":
-//                         return {
-//                             error: "E-mail already in use."
-//                         };
-//                     case "auth/invalid-email":
-//                         return {
-//                             error: "Invalid e-mail address format."
-//                         };
-//                     case "auth/too-many-requests":
-//                         return {
-//                             error: "Too many request. Try again in a minute."
-//                         };
-//                     default:
-//                         return {
-//                             error: "Check your internet connection."
-//                         };
-//                 }
-//             })
-//     }
-// }
-
-// export const loginUser = async ({ matric, email, password }) => {
-//     if (matric.length <= 0) {
-//         return { error: "Matric number cannot be empty." }
-//     } else if (email.length <= 0) {
-//         return { error: "Email cannot be empty." }
-//     } else if (password.length <= 0) {
-//         return { error: "Password cannot be empty." }
-//     } else if (matric.startsWith("cca")) {
-//         return { error: "Login with admin account denied." }
-//     } else {
-//         return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').once('value', function (snapshot) {
-//             console.log('iscreated value', snapshot); // null
-//             console.log('exists or not', snapshot.exists()) // false
-//             followupaction(matric, email, password, snapshot.exists(), snapshot.val());
-//         })
-//     }
-// };
-
 const followupaction = (matric, email, password, iscreated) => {
     // console.log('shearite? ' + isshearite)
     console.log('created? ' + iscreated.val())
@@ -212,41 +72,16 @@ const followupaction = (matric, email, password, iscreated) => {
             //var current = firebase.auth().currentUser;
 
             console.log('sign in!')
-
-            var date = new Date().getDate().toString();
-            if (date.length == 1) {
-                date = "0" + date;
-            }
-            var month = (new Date().getMonth() + 1).toString();
-            if (month.length == 1) {
-                month = "0" + month;
-            }
-            var year = new Date().getFullYear();
-            var hours = new Date().getHours().toString();
-            if (hours.length == 1) {
-                hours = "0" + hours;
-            }
-            var min = new Date().getMinutes().toString();
-            if (min.length == 1) {
-                min = "0" + min;
-            }
-            var sec = new Date().getSeconds().toString();
-            if (sec.length == 1) {
-                sec = "0" + sec;
-            }
-
-            var timestamp = year + month + date + ' ' + hours + ':' + min + ':' + sec;
-
-            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/lastloggedin').set(timestamp);
             return user;
         }, function (error) {
             switch (error.code) {
-                case "auth/invalid-email":
+                case "auth/invalid-email": // won't need these
                     return {
                         error: "Invalid matric number."
                     };
                 case "auth/user-not-found":
                 case "auth/wrong-password":
+                    //throw "Invalid matric number or password."
                     return {
                         error: "Invalid matric number or password."
                     };
@@ -269,39 +104,15 @@ const followupaction = (matric, email, password, iscreated) => {
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/status').set("yo hmu i am in");
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/profilePicUrl').set('default');
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/mealcredit').set(0);
-
-
-                var date = new Date().getDate().toString();
-                if (date.length == 1) {
-                    date = "0" + date;
-                }
-                var month = (new Date().getMonth() + 1).toString();
-                if (month.length == 1) {
-                    month = "0" + month;
-                }
-                var year = new Date().getFullYear();
-                var hours = new Date().getHours().toString();
-                if (hours.length == 1) {
-                    hours = "0" + hours;
-                }
-                var min = new Date().getMinutes().toString();
-                if (min.length == 1) {
-                    min = "0" + min;
-                }
-                var sec = new Date().getSeconds().toString();
-                if (sec.length == 1) {
-                    sec = "0" + sec;
-                }
-
-                var timestamp = year + month + date + ' ' + hours + ':' + min + ':' + sec;
-
-                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/lastloggedin').set(timestamp);
+                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/mealresettime').set(0);
+                console.log(firebase.auth().currentUser)
                 user.user.updateProfile({
                     displayName: matric
                 })
+                firebase.auth().updateCurrentUser(user.user);
                 return user.user
             }, function (error) {
-                console.log(error);
+                console.log('error', error);
                 switch (error.code) {
                     case "auth/email-already-in-use": // we won't need this
                         return {
@@ -344,8 +155,8 @@ export const loginUser = async ({ matric, email, password }) => {
             console.log(isshearite)
             if (isshearite === false) {
                 return { error: 'Not a shearite!'}
-            } else if (matric !== password) {
-                return { error: 'Wrong matric/password for first-time users.' }
+            // } else if (matric !== password) {
+            //     return { error: 'Wrong matric/password for first-time users.' }
             } else {
                 var iscreated = false
                 return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').once('value', function (snapshot) {
@@ -353,7 +164,9 @@ export const loginUser = async ({ matric, email, password }) => {
                     // console.log('exists or not', snapshot.exists()) // false
                     iscreated = snapshot
                 }).then(() => {
-                    followupaction(matric, email, password, iscreated);
+                    followupaction(matric, email, password, iscreated)
+                    //console.log('test', test)
+                    //console.log('test.error', test.error) //???
                 })
             }
 

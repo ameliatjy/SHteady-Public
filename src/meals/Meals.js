@@ -19,7 +19,7 @@ export default class Meals extends Component {
     state = {
         matric: null,
         mealcredit: null,
-        lastloggedin: null,
+        mealresettime: null,
     }
 
     viewMenu = () => {
@@ -226,8 +226,8 @@ export default class Meals extends Component {
                 self.setState({ matric: user.displayName })
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(user.displayName).on('value', function (snapshot) {
                     self.setState({ mealcredit: snapshot.val().mealcredit })
-                    self.setState({ lastloggedin: snapshot.val().lastloggedin })
-                    while (self.state.matric == null || self.state.mealcredit == null || self.state.lastloggedin == null) {
+                    self.setState({ mealresettime: snapshot.val().mealresettime })
+                    while (self.state.matric == null || self.state.mealcredit == null || self.state.mealresettime == null) {
                         setTimeout(function () { }, 3000);
                         console.log("getting data, setting timeout");
                     }
@@ -247,30 +247,49 @@ export default class Meals extends Component {
                 }
 
                 var currdate = year + month + date;
-
-                var lastloggedindate = self.state.lastloggedin.substring(0, 8);
-                var lastloggedinhour = self.state.lastloggedin.substring(9, 11);
+                var timestamp = currdate + ' ' + hours;
 
                 if (Number(hours) >= 7 && Number(hours) <= 11) { // if current time is breakfast time
-                    // check if last logged in time is within also
-                    if (currdate > lastloggedindate) {
+                    if (self.state.mealresettime === 0) { // new user
                         firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
-                    } else { //same day
-                        if (Number(lastloggedinhour) >= 7 && Number(lastloggedinhour) <= 11) {
-                            // dont change meal credit
-                        } else {
+                        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealresettime').set(timestamp);
+                    } else {
+                        var lastmealresetdate = self.state.mealresettime.substring(0, 8);
+                        var lastmealresethour = self.state.mealresettime.substring(9, 11);
+                        // check if last logged in time is within also
+                        if (currdate > lastmealresetdate) {
                             firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
+                            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealresettime').set(timestamp);
+                        } else { //same day
+                            if (Number(lastmealresethour) >= 7 && Number(lastmealresethour) <= 11) {
+                                // dont change meal credit
+                                console.log('nochange meals')
+                            } else {
+                                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
+                                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealresettime').set(timestamp);
+                            }
                         }
                     }
                 } else if (Number(hours) >= 17 && Number(hours) <= 22) { // dinner time
-                    // check if last logged in time is within also
-                    if (currdate > lastloggedindate) {
+                    if (self.state.mealresettime === 0) { // new user
                         firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
-                    } else { //same day
-                        if (Number(lastloggedinhour) >= 17 && Number(lastloggedinhour) <= 22) {
-                            // dont change meal credit
-                        } else {
+                        firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealresettime').set(timestamp);
+                    } else {
+                        var lastmealresetdate = self.state.mealresettime.substring(0, 8);
+                        var lastmealresethour = self.state.mealresettime.substring(9, 11);
+                        // check if last logged in time is within also
+                        if (currdate > lastmealresetdate) {
                             firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
+                            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealresettime').set(timestamp);
+                        } else { //same day
+                            if (Number(lastmealresethour) >= 17 && Number(lastmealresethour) <= 22) {
+                                // dont change meal credit
+                                console.log('nochange meals')
+                                console.log(Number(lastmealresethour))
+                            } else {
+                                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealcredit').set(1)
+                                firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + self.state.matric).child('mealresettime').set(timestamp);
+                            }
                         }
                     }
                 }
