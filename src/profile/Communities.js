@@ -5,6 +5,7 @@ import {
     Text,
     TouchableOpacity,
     Alert,
+    Image
 } from 'react-native';
 
 import Arrow from 'react-native-vector-icons/AntDesign';
@@ -27,6 +28,7 @@ export default class Communities extends Component {
 
     test = []
     status = new Map();
+    profilepic = new Map();
 
     goToCommunity = () => {
         Alert.alert('Going to check members of this community');
@@ -80,14 +82,21 @@ export default class Communities extends Component {
     addmemberstoarray = (ccaname, key) => {
         var membersarray = this.test
         var statusmap = this.status
+        var profilepicmap = this.profilepic
         firebase.database().ref('CCA/' + ccaname + '/' + key).on('value', function (snapshot) {
             var matric = snapshot.val().matric;
             firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
                 // curremail = snapshot.val().email;
                 var name = snapshot.val().name;
                 var status = snapshot.val().status;
+                var profilepic = snapshot.val().profilePicUrl;
                 membersarray.push(name)
                 statusmap.set(name, status)
+                if (typeof profilepic === 'undefined' || profilepic == 'default') {
+                    profilepicmap.set(name, 'https://firebasestorage.googleapis.com/v0/b/shteady-b81ed.appspot.com/o/defaultsheares.png?alt=media&token=95e0cee4-a5c0-4000-8e9b-2c258f87fe2d')
+                } else {
+                    profilepicmap.set(name, profilepic)
+                }
                 console.log('statusmap', statusmap)
             })
         })
@@ -112,12 +121,15 @@ export default class Communities extends Component {
             console.log('testarray', this.test)
         } else {
             this.test = []
+            this.status = new Map();
+            this.profilepic = new Map();
             console.log('testarray', this.test)
         }
         return (
             <View style={styles.membersDisplay}>
                 {this.test.map((item) => (
                     <View style={styles.membersdetails}>
+                        <Image style={styles.profilepic} source={{ uri: this.profilepic.get(item)}} />
                         <Text style={styles.membersname}>{item}</Text>
                         <StatusButton type={this.status.get(item)} />
                     </View>
@@ -187,5 +199,12 @@ const styles = StyleSheet.create({
     membersdetails: {
         flexDirection: 'row',
         paddingBottom: 5
-    }
+    },
+    profilepic: {
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        alignSelf: 'center',
+        marginRight: 10
+    },
 });
