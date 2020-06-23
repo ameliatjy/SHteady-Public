@@ -21,10 +21,12 @@ export default class Communities extends Component {
 
     state = {
         groups: [],
-        activeSections: []
+        activeSections: [],
+        members: []
     }
 
-    test = ["Amelia Tan Jin Yu", "Loh Wen Yu"]
+    test = []
+    status = new Map();
 
     goToCommunity = () => {
         Alert.alert('Going to check members of this community');
@@ -75,13 +77,49 @@ export default class Communities extends Component {
         );
     };
 
+    addmemberstoarray = (ccaname, key) => {
+        var membersarray = this.test
+        var statusmap = this.status
+        firebase.database().ref('CCA/' + ccaname + '/' + key).on('value', function (snapshot) {
+            var matric = snapshot.val().matric;
+            firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
+                // curremail = snapshot.val().email;
+                var name = snapshot.val().name;
+                var status = snapshot.val().status;
+                membersarray.push(name)
+                statusmap.set(name, status)
+                console.log('statusmap', statusmap)
+            })
+        })
+    }
+
     _renderContent = section => {
+        const ccaIndex = this.state.activeSections[0]
+        console.log(ccaIndex)
+        const ccaname = this.state.groups[ccaIndex]
+        console.log(ccaname) // Sports Management Board
+        if (typeof ccaname !== 'undefined') {
+            firebase.database().ref('CCA/' + ccaname).on('value', querySnapShot => {
+                let data = querySnapShot.val() ? querySnapShot.val() : {};
+                console.log(data)
+                let keys = Object.keys(data)
+                console.log(keys)
+                var key
+                for (key of keys) {
+                    this.addmemberstoarray(ccaname, key)
+                }
+            })
+            console.log('testarray', this.test)
+        } else {
+            this.test = []
+            console.log('testarray', this.test)
+        }
         return (
             <View style={styles.membersDisplay}>
                 {this.test.map((item) => (
                     <View style={styles.membersdetails}>
                         <Text style={styles.membersname}>{item}</Text>
-                        <StatusButton type='yo hmu i am in' />
+                        <StatusButton type={this.status.get(item)} />
                     </View>
                 ))}
             </View>
@@ -93,6 +131,7 @@ export default class Communities extends Component {
     };
 
     render() {
+        console.log(this.state.activeSections)
         return (
             <Accordion
                 sections={this.state.groups}
