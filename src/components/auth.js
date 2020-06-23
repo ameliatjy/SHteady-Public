@@ -262,9 +262,6 @@ const followupaction = (matric, email, password, iscreated) => {
         })
     } else {
         console.log('there ' + matric)
-        if (matric !== password) { //first time user matric and pw is same in caps
-            return { error: 'Wrong matric/password for first-time users.' }
-        }
         return firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(function (user) {
                 console.log('signed up!')
@@ -306,11 +303,11 @@ const followupaction = (matric, email, password, iscreated) => {
             }, function (error) {
                 console.log(error);
                 switch (error.code) {
-                    case "auth/email-already-in-use":
+                    case "auth/email-already-in-use": // we won't need this
                         return {
                             error: "E-mail already in use."
                         };
-                    case "auth/invalid-email":
+                    case "auth/invalid-email": // we won't need this because email format will always be valid
                         return {
                             error: "Invalid e-mail address format."
                         };
@@ -337,29 +334,30 @@ export const loginUser = async ({ matric, email, password }) => {
     } else if (matric.startsWith("cca")) {
         return { error: "Login with admin account denied." }
     } else {
+        var isshearite = false
+        return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(matric).once('value', function(snapshot) {
+            isshearite = snapshot.exists();
+            //isshearite = (snapshot.val() !== null)
+            console.log('shearite?' + isshearite)   
+        }).then(() => {
+            console.log('test 1 ' + isshearite)
+            console.log(isshearite)
+            if (isshearite === false) {
+                return { error: 'Not a shearite!'}
+            } else if (matric !== password) {
+                return { error: 'Wrong matric/password for first-time users.' }
+            } else {
+                var iscreated = false
+                return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').once('value', function (snapshot) {
+                    console.log('iscreated value', snapshot); // null
+                    // console.log('exists or not', snapshot.exists()) // false
+                    iscreated = snapshot
+                }).then(() => {
+                    followupaction(matric, email, password, iscreated);
+                })
+            }
 
-        var
-        // var isshearite = false
-        // return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(matric).once('value', function(snapshot) {
-        //     isshearite = (snapshot.val() !== null)
-        //     console.log('shearite?' + isshearite)   
-        // }).then(() => {
-        //     console.log('test 1 ' + isshearite)
-        //     console.log(isshearite)
-        //     if (isshearite === false) {
-        //         return { error: 'Not a shearite'}
-        //     } else {
-        //         var iscreated = false
-        //         return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').once('value', function (snapshot) {
-        //             console.log('iscreated value', snapshot); // null
-        //             // console.log('exists or not', snapshot.exists()) // false
-        //             iscreated = snapshot
-        //         }).then(() => {
-        //             followupaction(matric, email, password, iscreated);
-        //         })
-        //     }
-
-        // })
+        })
 
     }
 }

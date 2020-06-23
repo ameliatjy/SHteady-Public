@@ -27,13 +27,18 @@ const Login = ({ navigation }) => {
         });
 
         console.log('navigating????')
+        console.log(response);
 
-        if (response.error) {
-            setError(response.error);
-        } else {
+        if (typeof response === 'undefined') {
             console.log('navigating')
             Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
                 .then(() => navigation.navigate('Profile'));
+        } else if (response.error) {
+            setError(response.error);
+        // } else {
+        //     console.log('navigating')
+        //     Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
+        //         .then(() => navigation.navigate('Profile'));
         }
 
         setLoading(false);
