@@ -145,32 +145,23 @@ export const loginUser = async ({ matric, email, password }) => {
     } else if (matric.startsWith("cca")) {
         return { error: "Login with admin account denied." }
     } else {
-        var isshearite = false
-        return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(matric).once('value', function(snapshot) {
+        var iscreated = false
+        var isshearite = false;
+        return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').once('value', function (snapshot) {
+            console.log('iscreated value', snapshot); // null
+            // console.log('exists or not', snapshot.exists()) // false
+            iscreated = snapshot
             isshearite = snapshot.exists();
-            //isshearite = (snapshot.val() !== null)
-            console.log('shearite?' + isshearite)   
         }).then(() => {
-            console.log('test 1 ' + isshearite)
-            console.log(isshearite)
             if (isshearite === false) {
-                return { error: 'Not a shearite!'}
-            // } else if (matric !== password) {
-            //     return { error: 'Wrong matric/password for first-time users.' }
+                return { error: 'Not a shearite!' }
+            } else if (iscreated.val() === false && matric !== password) {
+                return { error: 'Wrong matric/password for first-time users.' }
             } else {
-                var iscreated = false
-                return firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric + '/iscreated').once('value', function (snapshot) {
-                    console.log('iscreated value', snapshot); // null
-                    // console.log('exists or not', snapshot.exists()) // false
-                    iscreated = snapshot
-                }).then(() => {
-                    followupaction(matric, email, password, iscreated)
-                    //console.log('test', test)
-                    //console.log('test.error', test.error) //???
-                })
+                const test = followupaction(matric, email, password, iscreated)
+                console.log('test', test)
+                //console.log('test.error', test.error) //???
             }
-
         })
-
     }
 }

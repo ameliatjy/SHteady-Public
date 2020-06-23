@@ -129,11 +129,13 @@ export default class Profile extends Component {
 
     getDeets = () => {
         let self = this;
+        console.log('currentuser top', firebase.auth().currentUser) //always null
         unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             console.log('Profile chunk')
             if (user) {
                 self.setState({ matric: user.displayName })
                 console.log('displayname:', user.displayName)
+                console.log('currentuser', firebase.auth().currentUser.displayName)
                 firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/').child(user.displayName).on('value', function (snapshot) {
                     self.setState({ currname: snapshot.val().name })
                     self.setState({ currroom: snapshot.val().room })

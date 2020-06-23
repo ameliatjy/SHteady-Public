@@ -15,6 +15,8 @@ const Login = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+    console.log('at homepage',firebase.auth().currentUser)
+
     const onLoginPressed = async () => {
         if (loading) return;
 
@@ -27,10 +29,11 @@ const Login = ({ navigation }) => {
         });
 
         console.log('navigating????')
-        console.log(response);
+        console.log('response', response);
 
         if (typeof response === 'undefined') {
             console.log('navigating')
+            console.log('login current user', firebase.auth().currentUser); // always null
             Promise.all([navigation.navigate('SignedIn', {screen : 'Profile'})])
                 .then(() => navigation.navigate('Profile'));
         } else if (response.error) {
