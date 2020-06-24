@@ -43,10 +43,11 @@ export default class DashBoard extends Component {
         var user = firebase.auth().currentUser;
 
         var matric = user.displayName
-        var currroom, currname, block
+        var currroom, currname, currprofilepic, block
         firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function(snapshot) {
             currroom = snapshot.val().room;
             currname = snapshot.val().name;
+            currprofilepic = snapshot.val().profilePicUrl;
             block = currroom.substring(0, 1);
         })
 
@@ -54,6 +55,7 @@ export default class DashBoard extends Component {
         newRequest.setWithPriority({
             name: currname,
             room: currroom,
+            profilePicUrl: currprofilepic === 'default' ? 'https://firebasestorage.googleapis.com/v0/b/shteady-b81ed.appspot.com/o/defaultsheares.png?alt=media&token=95e0cee4-a5c0-4000-8e9b-2c258f87fe2d' : currprofilepic,
             task: currtask,
             addionalInfo: moreInfo,
             isInProgress: false,
@@ -303,6 +305,9 @@ export default class DashBoard extends Component {
                                 <View key = {key}  style = {styles.item}>
                                     <TouchableOpacity style={styles.task} onPress={() => this.helpWithTaskButton(key)}>
                                         <View>
+                                            <Image style={styles.profilepic} source={{ uri: this.state.dashboard[key].profilePicUrl }} />
+                                        </View>
+                                        <View>
                                             <Text style={styles.taskHeader}>{this.state.dashboard[key].name}</Text>
                                             <Text style={styles.taskBody}>{this.state.dashboard[key].task}</Text>
                                         </View>
@@ -401,4 +406,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
     },
+    profilepic: {
+        width:40,
+        height:40,
+        borderRadius:20,
+        marginRight:10
+    }
 });
