@@ -136,7 +136,7 @@ export default class Communities extends Component {
         return (
             <View style={styles.membersDisplay}>
                 {this.test.map((item) => (
-                    <View style={styles.membersdetails}>
+                    <View key={item} style={styles.membersdetails}>
                         <Image style={styles.profilepic} source={{ uri: this.profilepic.get(item)}} />
                         <Text style={styles.membersname}>{item}</Text>
                         <StatusButton type={this.status.get(item)} />
