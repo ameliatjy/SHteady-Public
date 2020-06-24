@@ -49,13 +49,13 @@ const confirmedReport = (placeText, problemText, addText) => {
     var newKey = newReport.getKey()
     var currReports = []
 
-    firebase.database().ref('users/'+ matric).on('value', function(snapshot) {
+    firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/'+ matric).on('value', function(snapshot) {
             // curremail = snapshot.val().email;
         currReports = snapshot.val().submittedReports ? snapshot.val().submittedReports : [];
     })
     currReports.push(newKey)
 
-    firebase.database().ref('users/'+ matric).child('submittedReports').set(currReports)
+    firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/'+ matric).child('submittedReports').set(currReports)
 }
 
 export default class SubmitReport extends Component {
