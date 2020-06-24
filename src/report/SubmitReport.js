@@ -95,7 +95,7 @@ export default class SubmitReport extends Component {
         return(
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View style={styles.container}>
-                    <Text style={styles.question}>There is something wrong at ... *</Text>
+                    <Text style={styles.question}>There is something wrong at ... <Text style={{color: '#ab000d'}}>*</Text></Text>
                     <View style={styles.inputConShort}>
                         <TextInput 
                             ref={this.state.myPlaceText}
@@ -106,7 +106,7 @@ export default class SubmitReport extends Component {
                             onChangeText={(inputText) => this.setState({placeText: inputText})}/>
                     </View>
                         
-                    <Text style={styles.question}>There is something wrong with ... *</Text>
+                    <Text style={styles.question}>There is something wrong with ... <Text style={{color: '#ab000d'}}>*</Text></Text>
                     <View style={styles.inputConLong}>
                         <TextInput
                             ref={this.state.myProblemText}
