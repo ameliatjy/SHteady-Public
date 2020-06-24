@@ -98,16 +98,19 @@ export default class History extends Component {
                                                 </View>
                                             </View>
                                             <View style={styles.histDetails}>
-                                                <IconEntypo name='location-pin' size={20} style={{color:'blue', marginRight:10}}/>
-                                                <Text style={styles.taskBody}>{this.brief(this.state.history[key].location)}</Text>
+                                                <IconEntypo name='location-pin' size={20} style={{color: 'rgb(0, 128, 129)', marginRight:10}}/>
+                                                {/* <Text style={styles.taskBody}>{this.brief(this.state.history[key].location)}</Text> */}
+                                                <Text style={styles.taskBody}>{this.state.history[key].location}</Text>
                                             </View>
                                             <View style={styles.histDetails}>
-                                                <IconMat name='report-problem' size={20} style={{color:'red', marginRight:10}}/>
-                                                <Text style={styles.taskBody}>{this.brief(this.state.history[key].problem)}</Text>
+                                                <IconMat name='report-problem' size={20} style={{color:'#fed000', marginRight:10}}/>
+                                                {/* <Text style={styles.taskBody}>{this.brief(this.state.history[key].problem)}</Text> */}
+                                                <Text style={styles.taskBody}>{this.state.history[key].problem}</Text>
                                             </View>
                                             <View style={styles.histDetails}>
-                                                <IconMat name='more' size={20} style={{color:'green', marginRight:10}}/>
-                                                <Text style={styles.taskBody}>{this.state.history[key].otherDetails == '' ? 'No additional details' : this.brief(this.state.history[key].otherDetails)}</Text>
+                                                <IconMat name='more' size={20} style={{color:'rgba(76, 81, 120, 0.6)', marginRight:10}}/>
+                                                {/* <Text style={styles.taskBody}>{this.state.history[key].otherDetails == '' ? 'No additional details' : this.brief(this.state.history[key].otherDetails)}</Text> */}
+                                                <Text style={styles.taskBody}>{this.state.history[key].otherDetails == '' ? 'No additional details' : this.state.history[key].otherDetails}</Text>
                                             </View>
                                         {/* </View> */}
                                     {/* </TouchableOpacity> */}
@@ -140,14 +143,14 @@ const styles = StyleSheet.create({
     statusReceived : {
         height: 30,
         width: 100,
-        backgroundColor:'red', 
+        backgroundColor:'#e54140', 
         borderRadius: 5,
         alignItems: 'center',
         justifyContent:'center'
     },
     statusInProgress : {
         height: 30,
-        width: 100,
+        width: 120,
         backgroundColor:'orange', 
         borderRadius: 5,
         alignItems: 'center',
@@ -155,8 +158,8 @@ const styles = StyleSheet.create({
     },
     statusCompleted : {
         height: 30,
-        width: 100,
-        backgroundColor:'rgba(0,0,0,0.3)', 
+        width: 110,
+        backgroundColor:'#009b00', 
         borderRadius: 5,
         alignItems: 'center',
         justifyContent:'center'
@@ -200,7 +203,9 @@ const styles = StyleSheet.create({
     },
     taskBody : {
         fontSize: 18,
-        marginVertical: 5
+        marginVertical: 5,
+        flexWrap:'wrap',
+        marginRight: 40
     },
     taskProgress : {
         position: 'absolute',
