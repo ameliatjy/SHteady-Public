@@ -5,7 +5,8 @@ import {
     Text,
     TouchableOpacity,
     Alert,
-    Image
+    Image,
+    ScrollView
 } from 'react-native';
 
 import Arrow from 'react-native-vector-icons/AntDesign';
@@ -152,6 +153,7 @@ export default class Communities extends Component {
     render() {
         console.log(this.state.activeSections)
         return (
+            <ScrollView>
             <Accordion
                 sections={this.state.groups}
                 activeSections={this.state.activeSections}
@@ -160,6 +162,7 @@ export default class Communities extends Component {
                 renderContent={this._renderContent}
                 onChange={this._updateSections}
             />
+            </ScrollView>
         );
     }
 }
