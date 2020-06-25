@@ -31,8 +31,12 @@ export default class Meals extends Component {
 
         var matric = user.displayName
         var availcredits, name
-        firebase.database().ref().once('value', function (snapshot) {
-            firebase.database().ref('donatedmeals').set(snapshot.val().donatedmeals + 1);
+        firebase.database().ref('donatedmeals').once('value', function (snapshot) {
+            if (snapshot.exists()) {
+                firebase.database().ref('donatedmeals').set(snapshot.val() + 1);
+            } else {
+                firebase.database().ref('donatedmeals').set(1);
+            }
         })
 
         firebase.database().ref('1F0zRhHHyuRlCyc51oJNn1z0mOaNA7Egv0hx3QSCrzAg/users/' + matric).on('value', function (snapshot) {
@@ -148,7 +152,7 @@ export default class Meals extends Component {
         var matric = user.displayName
         var donatedmeals
         firebase.database().ref('donatedmeals').once('value', function (snapshot) {
-            if (snapshot.val() <= 0) {
+            if (snapshot.exists() === false || snapshot.val() <= 0) {
                 Alert.alert(
                     "Unsuccessful",
                     "There are no meals up for redemption.",
