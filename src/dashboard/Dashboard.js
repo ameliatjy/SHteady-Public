@@ -75,7 +75,7 @@ export default class DashBoard extends Component {
             'Send Help Please!',
             'Please help me close my windows!!!',
             [
-                {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
+                {text: 'Cancel', style: 'cancel'},
                 {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please close my windows!', '', 1, 3600000), style: 'default'},
             ]
         );
@@ -106,7 +106,7 @@ export default class DashBoard extends Component {
      
     wakeupHandleConfirm = (datetime) => {
         var difference = moment(datetime).diff(moment(firebase.database.ServerValue.TIMESTAMP))
-        console.warn(difference)
+        //console.warn(difference)
         this.oneTimeTaskConfirmation('Please wake me up!', moment(datetime).format('llll'), 4, difference)
         this.hideDatetimePicker();
     }
@@ -116,7 +116,7 @@ export default class DashBoard extends Component {
             'Send Help Please!',
             'Halim coming!!! Help me hide my aircon PLEASE!!!',
             [
-                {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
+                {text: 'Cancel', style: 'cancel'},
                 {text: 'Confirm', onPress: () => this.oneTimeTaskConfirmation('Please hide my aircon!', '', 2, 1800000), style: 'default'},
             ]
         );
@@ -178,7 +178,7 @@ export default class DashBoard extends Component {
                 'Thank you for offering your help!\n' +
                 'Please confirm that the task has been completed!',
                 [
-                    {text: 'Cancel', onPress: () => console.warn('CANCEL Pressed'), style: 'cancel'},
+                    {text: 'Cancel', style: 'cancel'},
                     {text: 'Confirm', onPress: () => this.completeTask(key), style: 'default'},
                 ]
                 // onpress(confirm) delete the task
@@ -189,7 +189,7 @@ export default class DashBoard extends Component {
                 item.task,
                 item.addionalInfo + '\n' + 'Room Number: ' + item.room,
                 [
-                    {text: 'Cancel', onPress: () => console.warn('cancel pressed'), style: 'cancel'},
+                    {text: 'Cancel', style: 'cancel'},
                     {text: 'Confirm', onPress: () => this.helpTask(key), style: 'default'},
                 ]
                 // onpress(confirm) change task taskinprogress:true
