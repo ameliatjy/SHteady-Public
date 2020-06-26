@@ -54,7 +54,7 @@ export default class MasterHistory extends Component {
             'Status: Received',
             'Please confirm that relevant personel has been contacted to solve the issue. If needed, please check website for full details.\n',
             [
-                {text: 'Cancel', onPress: () => console.warn('Cancel Pressed'), style: 'cancel'},
+                {text: 'Cancel', style: 'cancel'},
                 {text: 'Confirm', onPress: () => this.handleConfirm(key), style: 'default'},
             ]
         )
@@ -65,7 +65,7 @@ export default class MasterHistory extends Component {
             'Status: In Progress',
             'Please confirm that the issue has been solved. If needed, please check website for full details.\n',
             [
-                {text: 'Cancel', onPress: () => console.warn('Cancel Pressed'), style: 'cancel'},
+                {text: 'Cancel', style: 'cancel'},
                 {text: 'Confirm', onPress: () => this.handleConfirm(key), style: 'default'},
             ]
         )
