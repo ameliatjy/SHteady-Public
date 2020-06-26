@@ -27,7 +27,7 @@ const submitReport = (placeText, problemText, addText) => {
         'Problem: ' + problemText + '\n' + 
         'Additional Details: ' + addText,
         [
-            {text: 'Cancel', onPress: () => console.warn('Cancel Pressed'), style: 'cancel'},
+            {text: 'Cancel', style: 'cancel'},
             {text: 'Confirm', onPress: () => confirmedReport(placeText, problemText, addText), style: 'default'},
         ]
     );
