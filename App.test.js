@@ -1,5 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer'
+import '@expo/vector-icons';
 
 import App from './App';
 
